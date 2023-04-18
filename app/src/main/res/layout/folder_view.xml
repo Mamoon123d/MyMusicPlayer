@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android = "http://schemas.android.com/apk/res/android"
+    android:layout_width = "wrap_content"
+    android:layout_height = "wrap_content"
+    android:orientation="vertical"
+    android:layout_margin="15dp"
+    >
+
+    <ImageView
+        android:id="@+id/iv_folder"
+        android:layout_width = "75dp"
+        android:layout_height = "100dp"
+        android:src="@drawable/folder"
+        android:contentDescription = "@string/image_icon" />
+
+    <TextView
+        android:id="@+id/folder_name"
+        android:layout_width = "match_parent"
+        android:layout_height = "wrap_content"
+        android:textAlignment="center"
+        android:text="@string/folder_name"
+        android:textColor="@color/black"
+        />
+    <TextView
+        android:id="@+id/video_counter"
+        android:layout_width = "match_parent"
+        android:layout_height = "wrap_content"
+        android:text="1 videos"
+        android:textAlignment="center"
+        />
+
+</LinearLayout>

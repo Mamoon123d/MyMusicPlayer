@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android = "http://schemas.android.com/apk/res/android">
+   <item
+       android:id="@+id/video"
+       android:icon="@drawable/play"
+       android:title="@string/video"  />
+    <item
+        android:id="@+id/music"
+        android:icon="@drawable/music"
+        android:title="@string/music" />
+    <item
+        android:id="@+id/discover"
+        android:icon="@drawable/discovery"
+        android:title="@string/discover" />
+    <item
+        android:id="@+id/me"
+        android:icon="@drawable/user"
+        android:title="@string/me" />
+</menu>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="@dimen/x30">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_dialog"
+            android:orientation="vertical"
+            android:padding="@dimen/x10"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/d_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="Remove"
+                android:textColor="@color/text_1"
+                android:textSize="@dimen/sp20"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/x20"
+                android:text="@string/q_remove"
+                android:textColor="@color/text_1"
+                android:textSize="@dimen/sp16" />
+
+            <CheckBox
+                android:id="@+id/delete_ch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/q_delete"
+                android:textColor="@color/text_1"
+                android:textSize="@dimen/sp12" />
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/x10">
+
+                <TextView
+                    android:id="@+id/pos_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/x10"
+                    android:paddingHorizontal="2dp"
+                    android:paddingVertical="@dimen/x4"
+                    android:text="@string/commit"
+                    android:textColor="@color/text_2"
+                    android:textSize="@dimen/sp16"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/rename_et" />
+
+                <TextView
+                    android:id="@+id/neg_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/x10"
+                    android:layout_marginEnd="@dimen/x10"
+                    android:paddingHorizontal="2dp"
+                    android:paddingVertical="@dimen/x4"
+                    android:text="@string/cancel"
+                    android:textColor="@color/text_5"
+                    android:textSize="@dimen/sp16"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toStartOf="@+id/pos_btn" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

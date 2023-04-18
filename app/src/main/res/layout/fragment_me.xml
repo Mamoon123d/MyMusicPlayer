@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android = "http://schemas.android.com/apk/res/android"
+    xmlns:tools = "http://schemas.android.com/tools"
+    xmlns:app = "http://schemas.android.com/apk/res-auto">
+<data>
+
+</data>
+    <androidx.core.widget.NestedScrollView
+    android:layout_width = "match_parent"
+    android:layout_height = "wrap_content"
+    tools:context = ".fragment.MeFragment">
+        <LinearLayout
+            android:layout_width = "match_parent"
+            android:layout_height = "wrap_content"
+            android:gravity = "center_horizontal"
+            android:orientation = "vertical"
+            android:paddingBottom = "@dimen/qb_px_16"
+            >
+         <androidx.constraintlayout.widget.ConstraintLayout
+             android:layout_width = "wrap_content"
+             android:layout_height = "wrap_content"
+             android:layout_marginTop = "@dimen/qb_px_10"
+             >
+        <ImageView
+            android:id = "@+id/ivSubscription"
+            android:layout_width = "@dimen/qb_px_328"
+            android:layout_height = "@dimen/qb_px_80"
+            android:foreground = "@drawable/selectable_item_background"
+            android:src = "@drawable/img_me_subscription"
+            app:layout_constraintBottom_toTopOf = "@+id/ivVip"
+            app:layout_constraintEnd_toEndOf = "parent"
+            app:layout_constraintStart_toStartOf = "parent"
+            app:layout_constraintTop_toTopOf = "parent" />
+        <ImageView
+            android:id = "@+id/ivVip"
+            android:layout_width = "@dimen/qb_px_328"
+            android:layout_height = "@dimen/qb_px_44"
+            android:src = "@drawable/img_me_vip"
+            app:layout_constraintBottom_toBottomOf = "parent"
+            app:layout_constraintEnd_toEndOf = "parent"
+            app:layout_constraintStart_toStartOf = "parent"
+            app:layout_constraintTop_toBottomOf = "@+id/ivSubscription" />
+        <TextView
+            android:id = "@+id/tvMyCoin"
+            android:layout_width = "wrap_content"
+            android:layout_height = "wrap_content"
+            android:layout_marginStart = "@dimen/qb_px_12"
+            android:layout_marginTop = "@dimen/qb_px_21"
+            android:paddingEnd = "@dimen/qb_px_4"
+            android:text = "@string/my_coin"
+            android:textColor = "#402212"
+            android:textSize = "12sp"
+            app:layout_constraintStart_toStartOf = "@+id/ivSubscription"
+            app:layout_constraintTop_toTopOf = "@+id/ivSubscription" />
+        <ImageView
+            android:layout_width = "@dimen/qb_px_5"
+            android:layout_height = "@dimen/qb_px_7"
+            android:rotationY = "@integer/angle_rtl_180"
+            android:src = "@drawable/ic_me_arrow1"
+            app:layout_constraintBottom_toBottomOf = "@+id/tvMyCoin"
+            app:layout_constraintStart_toEndOf = "@+id/tvMyCoin"
+            app:layout_constraintTop_toTopOf = "@+id/tvMyCoin" />
+        <TextView
+            android:id = "@+id/tvCoin"
+            android:layout_width = "wrap_content"
+            android:layout_height = "wrap_content"
+            android:layout_marginStart = "@dimen/qb_px_12"
+            android:textColor = "#402212"
+            android:textSize = "21sp"
+            android:textStyle = "bold"
+            app:layout_constraintStart_toStartOf = "parent"
+            app:layout_constraintTop_toBottomOf = "@+id/tvMyCoin" />
+        <TextView
+            android:id = "@+id/tvCoinTip"
+            android:layout_width = "50dp"
+            android:layout_height = "25dp"
+            android:layout_marginStart = "@dimen/qb_px_6"
+            android:gravity = "center"
+            android:textColor = "#ffdb81"
+            android:textSize = "@dimen/qb_px_10"
+            app:drawableStartCompat = "@drawable/ic_me_gold"
+            app:layout_constraintBottom_toBottomOf = "@+id/tvCoin"
+            app:layout_constraintStart_toEndOf = "@+id/tvCoin"
+            app:layout_constraintTop_toTopOf = "@+id/tvCoin" />
+             <TextView
+                 android:id = "@+id/tvExchange"
+                 android:layout_width = "wrap_content"
+                 android:layout_height = "wrap_content"
+                 android:drawablePadding = "@dimen/qb_px_4"
+                 android:paddingStart = "@dimen/qb_px_10"
+                 android:paddingTop = "@dimen/qb_px_6"
+                 android:paddingEnd = "@dimen/qb_px_4"
+                 android:paddingBottom = "@dimen/qb_px_6"
+                 android:background="@color/grey"
+                 android:text = "@string/exchange"
+                 android:textColor = "#ffdb81"
+                 android:textSize = "12sp"
+                 app:drawableEndCompat = "@drawable/ic_me_arrow"
+                 app:layout_constraintBottom_toBottomOf = "@+id/ivSubscription"
+                 app:layout_constraintEnd_toEndOf = "parent"
+                 app:layout_constraintTop_toTopOf = "@+id/ivSubscription"
+                 />
+             <ImageView
+                 android:id = "@+id/ivMeVip"
+                 android:layout_width = "50dp"
+                 android:layout_height = "50dp"
+                 android:layout_marginStart = "@dimen/qb_px_10"
+                 android:src = "@drawable/ic_me_vip"
+                 app:layout_constraintBottom_toBottomOf = "@+id/ivVip"
+                 app:layout_constraintStart_toStartOf = "parent"
+                 app:layout_constraintTop_toTopOf = "@+id/ivVip" />
+        <ImageView
+            android:id = "@+id/ivVipArrow"
+            android:layout_width = "25dp"
+            android:layout_height = "50dp"
+            android:layout_marginEnd = "10dp"
+            android:src = "@drawable/ic_me_arrow3"
+            app:layout_constraintBottom_toBottomOf = "@+id/ivVip"
+            app:layout_constraintEnd_toEndOf = "parent"
+            app:layout_constraintTop_toTopOf = "@+id/ivVip" />
+        <TextView
+            android:id = "@+id/tvVip"
+            android:layout_width = "0dp"
+            android:layout_height = "wrap_content"
+            android:ellipsize = "end"
+            android:lines = "1"
+            android:textColor = "#e0b99b"
+            android:text = "3-Day Free Trial"
+            android:textSize = "12sp"
+            app:layout_constraintBottom_toBottomOf = "@+id/ivVip"
+            app:layout_constraintEnd_toStartOf = "@+id/ivVipArrow"
+            app:layout_constraintStart_toEndOf = "@+id/ivMeVip"
+            app:layout_constraintTop_toTopOf = "@+id/ivVip" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+ <LinearLayout
+     android:layout_width = "match_parent"
+     android:layout_height = "wrap_content"
+     android:paddingStart = "@dimen/qb_px_16"
+     android:paddingTop = "@dimen/qb_px_12"
+     android:paddingEnd = "@dimen/qb_px_16">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id = "@+id/llTransfer"
+            android:layout_width = "0dp"
+            android:layout_height = "@dimen/qb_px_64"
+            android:layout_weight = "1"
+            android:background = "@color/grey"
+            android:gravity = "center">
+            <ImageView
+                android:id = "@+id/ivFileTransfer"
+                android:layout_width = "@dimen/qb_px_40"
+                android:layout_height = "@dimen/qb_px_40"
+                android:scaleType = "centerInside"
+                android:src = "@drawable/ic_me_transfer"
+                app:layout_constraintBottom_toBottomOf = "parent"
+                app:layout_constraintEnd_toStartOf = "@+id/tvTransfer"
+                app:layout_constraintStart_toStartOf = "parent"
+                app:layout_constraintTop_toTopOf = "parent" />
+            <TextView
+                android:id = "@+id/tvTransfer"
+                android:layout_width = "wrap_content"
+                android:layout_height = "wrap_content"
+                android:ellipsize = "end"
+                android:maxWidth = "@dimen/qb_px_120"
+                android:maxLines = "2"
+                android:paddingStart = "@dimen/qb_px_5"
+                android:text = "@string/transfer"
+                android:textColor = "@color/black"
+                app:layout_constraintBottom_toBottomOf = "parent"
+                app:layout_constraintEnd_toEndOf = "parent"
+                app:layout_constraintStart_toEndOf = "@+id/ivFileTransfer"
+                app:layout_constraintTop_toTopOf = "parent" />
+            <ImageView
+                android:id = "@+id/ivTransferNew"
+                android:layout_width = "wrap_content"
+                android:layout_height = "wrap_content"
+                android:layout_gravity = "end"
+                android:layout_marginTop = "@dimen/qb_px_6"
+                android:layout_marginEnd = "@dimen/qb_px_3"
+                android:src = "@drawable/icon_hot"
+                android:visibility = "gone"
+                app:layout_constraintEnd_toEndOf = "parent"
+                app:layout_constraintTop_toTopOf = "parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+        <Space
+            android:layout_width = "@dimen/qb_px_12"
+            android:layout_height = "match_parent" />
+       <androidx.constraintlayout.widget.ConstraintLayout
+           android:id = "@+id/llPrivacy"
+           android:layout_width = "0dp"
+           android:layout_height = "@dimen/qb_px_64"
+           android:background = "@color/grey"
+           android:layout_weight = "1"
+           android:gravity = "center">
+            <ImageView
+                android:id = "@+id/ivPrivacy"
+                android:layout_width = "@dimen/qb_px_40"
+                android:layout_height = "@dimen/qb_px_40"
+                android:scaleType = "centerInside"
+                android:src = "@drawable/ic_me_theme"
+                app:layout_constraintBottom_toBottomOf = "parent"
+                app:layout_constraintEnd_toStartOf = "@+id/tvPrivacy"
+                app:layout_constraintStart_toStartOf = "parent"
+                app:layout_constraintTop_toTopOf = "parent" />
+            <TextView
+                android:id = "@+id/tvPrivacy"
+                android:layout_width = "wrap_content"
+                android:layout_height = "wrap_content"
+                android:ellipsize = "end"
+                android:maxWidth = "@dimen/qb_px_120"
+                android:maxLines = "2"
+                android:paddingStart = "@dimen/qb_px_5"
+                android:text = "@string/featured_theme"
+                android:textColor = "@color/black"
+                app:layout_constraintBottom_toBottomOf = "parent"
+                app:layout_constraintEnd_toEndOf = "parent"
+                app:layout_constraintStart_toEndOf = "@+id/ivPrivacy"
+                app:layout_constraintTop_toTopOf = "parent" />
+            <ImageView
+                android:id = "@+id/ivPrivacyNew"
+                android:layout_width = "wrap_content"
+                android:layout_height = "wrap_content"
+                android:layout_gravity = "end"
+                android:layout_marginTop = "@dimen/qb_px_6"
+                android:layout_marginEnd = "@dimen/qb_px_3"
+                android:src = "@drawable/bottom_new"
+                android:visibility = "gone"
+                app:layout_constraintEnd_toEndOf = "parent"
+                app:layout_constraintTop_toTopOf = "parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+  <androidx.recyclerview.widget.RecyclerView
+      android:id = "@+id/rvMe"
+      android:layout_width = "match_parent"
+      android:layout_height = "wrap_content"
+      android:nestedScrollingEnabled = "false"
+      android:layout_marginTop="@dimen/dimen_10x"
+      app:layoutManager = "androidx.recyclerview.widget.GridLayoutManager"
+      app:spanCount = "3"
+      tools:listitem = "@layout/item_category"
+      />
+    <include
+        android:id="@+id/advertisement"
+        layout = "@layout/item_drawer_no_ad" />
+        <RelativeLayout
+            android:layout_width = "match_parent"
+            android:layout_height = "wrap_content"
+            >
+            <ImageView
+                android:id = "@+id/ivSetting"
+                android:layout_width = "25dp"
+                android:layout_height = "25dp"
+                android:layout_marginStart = "10dp"
+                android:layout_marginTop = "10dp"
+                android:layout_marginEnd = "10dp"
+                android:layout_marginBottom = "10dp"
+                android:src = "@drawable/setting" />
+            <TextView
+                android:id="@+id/tvSetting"
+                android:layout_width = "wrap_content"
+                android:layout_height = "wrap_content"
+                android:layout_toEndOf="@id/ivSetting"
+                android:text="@string/settings"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:layout_margin="@dimen/dimen_10x"
+                />
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width = "match_parent"
+            android:layout_height = "wrap_content"
+            >
+            <ImageView
+                android:id = "@+id/ivHelpNFeedback"
+                android:layout_width = "25dp"
+                android:layout_height = "25dp"
+                android:layout_marginStart = "10dp"
+                android:layout_marginTop = "10dp"
+                android:layout_marginEnd = "10dp"
+                android:layout_marginBottom = "10dp"
+                android:src = "@drawable/feedback" />
+            <TextView
+                android:id="@+id/tvHelpLine"
+                android:layout_width = "wrap_content"
+                android:layout_height = "wrap_content"
+                android:layout_toEndOf="@id/ivHelpNFeedback"
+                android:text="@string/help_feedback"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:layout_margin="@dimen/dimen_10x"
+                />
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width = "match_parent"
+            android:layout_height = "wrap_content"
+            >
+            <ImageView
+                android:id="@+id/ivRateUs"
+                android:layout_width = "25dp"
+                android:layout_height = "25dp"
+                android:src="@drawable/rate_us"
+                android:layout_margin="10dp"
+                />
+            <TextView
+                android:id="@+id/tvRating"
+                android:layout_width = "wrap_content"
+                android:layout_height = "wrap_content"
+                android:layout_toEndOf="@id/ivRateUs"
+                android:text="Rate Us"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:layout_margin="@dimen/dimen_10x"
+                />
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width = "match_parent"
+            android:layout_height = "wrap_content"
+            >
+            <ImageView
+                android:id="@+id/ivAbout"
+                android:layout_width = "25dp"
+                android:layout_height = "25dp"
+                android:src="@drawable/about"
+                android:layout_margin="10dp"
+                />
+            <TextView
+                android:id="@+id/tvAbout"
+                android:layout_width = "wrap_content"
+                android:layout_height = "wrap_content"
+                android:layout_toEndOf="@id/ivAbout"
+                android:text="About"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                android:layout_margin="@dimen/dimen_10x"
+                />
+        </RelativeLayout>
+        </LinearLayout>
+</androidx.core.widget.NestedScrollView>
+</layout>

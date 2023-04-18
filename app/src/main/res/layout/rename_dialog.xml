@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+    </data>
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:paddingHorizontal="@dimen/x30"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_dialog"
+        android:padding="@dimen/x10"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/d_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Rename"
+            android:textColor="@color/text_2"
+            android:textSize="@dimen/sp18"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/rename_et"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/x10"
+            android:hint="Enter a name"
+            android:textColor="@color/text_1"
+            android:textColorHint="@color/text_5"
+            app:layout_constraintTop_toBottomOf="@+id/d_title" />
+
+        <TextView
+            android:id="@+id/pos_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/x10"
+            android:paddingHorizontal="2dp"
+            android:paddingVertical="@dimen/x4"
+            android:text="@string/commit"
+            android:textColor="@color/text_2"
+            android:textSize="@dimen/sp16"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rename_et" />
+
+        <TextView
+            android:id="@+id/neg_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/x10"
+            android:layout_marginEnd="@dimen/x10"
+            android:paddingHorizontal="2dp"
+            android:paddingVertical="@dimen/x4"
+            android:text="@string/cancel"
+            android:textColor="@color/text_5"
+            android:textSize="@dimen/sp16"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/pos_btn"
+            app:layout_constraintTop_toBottomOf="@+id/rename_et" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

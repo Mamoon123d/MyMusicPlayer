@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android = "http://schemas.android.com/apk/res/android"
+    xmlns:app = "http://schemas.android.com/apk/res-auto"
+    xmlns:tools = "http://schemas.android.com/tools"
+    android:id = "@+id/constraintL_control"
+    android:layout_width = "match_parent"
+    android:layout_height = "match_parent"
+    android:background = "#80000000">
+  <LinearLayout
+      android:id = "@+id/llLeftContainer"
+      android:layout_width = "wrap_content"
+      android:layout_height = "wrap_content"
+      android:orientation = "vertical"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintBottom_toTopOf="@id/has_played"
+      app:layout_constraintStart_toStartOf="parent"
+      >
+            <ImageView
+                android:id = "@+id/ivMute"
+                android:layout_width = "@dimen/qb_px_32"
+                android:layout_height = "@dimen/qb_px_32"
+                android:layout_gravity = "left|center_vertical|center_horizontal|center|start"
+                android:layout_marginStart = "@dimen/qb_px_16"
+                android:contentDescription = "@string/app_name"
+                android:src = "@drawable/video_ic_playing_mute_normal"
+                tools:ignore = "RtlHardcoded" />
+            <ImageView
+                android:id = "@+id/lock"
+                android:layout_width = "@dimen/qb_px_32"
+                android:layout_height = "@dimen/qb_px_32"
+                android:layout_gravity = "left|center_vertical|center_horizontal|center|start"
+                android:layout_marginStart = "@dimen/qb_px_16"
+                android:layout_marginTop = "@dimen/qb_px_16"
+                android:contentDescription = "@string/app_name"
+                android:src = "@drawable/video_ic_playing_unlock"
+                app:layout_constraintBottom_toBottomOf = "parent"
+                app:layout_constraintStart_toStartOf = "parent"
+                app:layout_constraintTop_toBottomOf = "@+id/ivMute" />
+
+        </LinearLayout>
+  <LinearLayout
+      android:id = "@+id/llRightContainer"
+      android:layout_width = "wrap_content"
+      android:layout_height = "wrap_content"
+      android:orientation = "vertical"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintBottom_toTopOf="@id/exo_duration"
+      app:layout_constraintEnd_toEndOf="parent"
+      >
+            <ImageView
+                android:id = "@+id/player_screenshot"
+                android:layout_width = "@dimen/qb_px_32"
+                android:layout_height = "@dimen/qb_px_32"
+                android:layout_gravity = "left|center_vertical|center_horizontal|center|start"
+                android:layout_marginEnd = "@dimen/qb_px_16"
+                android:contentDescription = "@string/app_name"
+                android:src = "@drawable/video_ic_playing_mute_normal"
+                tools:ignore = "RtlHardcoded" />
+            <ImageView
+                android:id = "@+id/orientation"
+                android:layout_width = "@dimen/qb_px_32"
+                android:layout_height = "@dimen/qb_px_32"
+                android:layout_gravity = "left|center_vertical|center_horizontal|center|start"
+                android:layout_marginEnd = "@dimen/qb_px_16"
+                android:layout_marginTop = "@dimen/qb_px_16"
+                android:contentDescription = "@string/app_name"
+                android:src = "@drawable/video_ic_playing_unlock"
+                app:layout_constraintBottom_toBottomOf = "parent"
+                app:layout_constraintStart_toStartOf = "parent"
+                app:layout_constraintTop_toBottomOf = "@+id/player_screenshot" />
+
+        </LinearLayout>
+
+    <!--<ImageView
+         android:id = "@+id/lock"
+         android:layout_width = "@dimen/qb_px_32"
+         android:layout_height = "@dimen/qb_px_32"
+         android:layout_gravity = "left|center_vertical|center_horizontal|center|start"
+         android:layout_marginStart = "@dimen/qb_px_16"
+         android:layout_marginTop = "@dimen/qb_px_16"
+         android:contentDescription = "@string/app_name"
+         android:src = "@drawable/video_ic_playing_unlock"
+         app:layout_constraintBottom_toBottomOf = "0"
+         app:layout_constraintStart_toStartOf = "0"
+
+         />-->
+
+    <!--<ImageView
+        android:id = "@+id/ivSpeedUp"
+        android:layout_width = "@dimen/qb_px_32"
+        android:layout_height = "@dimen/qb_px_32"
+        android:layout_gravity = "left|center_vertical|center_horizontal|center|start"
+        android:layout_marginStart = "@dimen/qb_px_16"
+        android:layout_marginTop = "@dimen/qb_px_16"
+        android:contentDescription = "@string/app_name"
+        android:visibility = "gone"
+        app:layout_constraintBottom_toBottomOf = "0"
+        app:layout_constraintEnd_toEndOf = "0" />-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id = "@+id/constraintL_start_pause"
+        android:layout_width = "64dp"
+        android:layout_height = "64dp"
+        app:layout_constraintStart_toStartOf = "parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        >
+        <ImageButton
+            android:id = "@id/exo_play"
+            style = "@style/ExoMediaButton.Play"
+            android:layout_width = "wrap_content"
+            android:layout_height = "wrap_content"
+            android:padding = "16dp"
+            app:srcCompat = "@drawable/player_play"
+            android:contentDescription = "@string/play_button"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            />
+
+        <ImageButton
+            android:id = "@id/exo_pause"
+            style = "@style/ExoMediaButton.Pause"
+            android:layout_width = "wrap_content"
+            android:layout_height = "wrap_content"
+            android:background = "@null"
+            android:contentDescription = "@string/pause"
+            android:padding = "16dp"
+            app:layout_constraintStart_toStartOf = "parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:srcCompat = "@android:drawable/ic_media_pause"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+  <ImageView
+      android:id = "@+id/previous_btn"
+      android:layout_width = "47dp"
+      android:layout_height = "47dp"
+      android:layout_marginStart = "14dp"
+      android:layout_marginTop = "8dp"
+      android:layout_marginBottom = "10dp"
+      android:contentDescription = "@string/app_name"
+      android:scaleType = "centerInside"
+      android:src = "@drawable/player_previous_btn"
+      app:layout_constraintBottom_toBottomOf = "parent"
+      app:layout_constraintStart_toEndOf = "@+id/constraintL_start_pause"
+      app:layout_constraintTop_toBottomOf = "@+id/exo_progress"
+      />
+    <ImageView
+        android:id = "@+id/next_btn"
+        android:layout_width = "47dp"
+        android:layout_height = "47dp"
+        android:layout_marginStart = "4dp"
+        android:layout_marginTop = "8dp"
+        android:layout_marginBottom = "10dp"
+        android:clickable = "true"
+        android:focusable = "true"
+        android:scaleType = "centerInside"
+        android:src = "@drawable/player_next_btn"
+        app:layout_constraintBottom_toBottomOf = "parent"
+        app:layout_constraintStart_toEndOf = "@+id/previous_btn"
+        app:layout_constraintTop_toBottomOf = "@+id/exo_progress"
+        android:contentDescription = "@string/next" />
+     <TextView
+         android:id = "@+id/has_played"
+         android:layout_width = "wrap_content"
+         android:layout_height = "wrap_content"
+         android:layout_gravity = "center_vertical"
+         android:layout_marginStart = "15dp"
+         android:gravity = "end"
+         android:minWidth = "@dimen/qb_px_46"
+         android:paddingTop = "15dp"
+         android:paddingEnd = "10dp"
+         android:paddingBottom = "10dp"
+         android:text = "@string/duration"
+         android:textColor = "@android:color/white"
+         android:textSize = "14sp"
+         app:layout_constraintBottom_toBottomOf = "@+id/exo_progress"
+         app:layout_constraintEnd_toStartOf = "@+id/exo_progress"
+         app:layout_constraintStart_toStartOf = "parent"
+         app:layout_constraintTop_toTopOf = "@+id/exo_progress" />
+    <com.google.android.exoplayer2.ui.DefaultTimeBar
+        android:id = "@+id/exo_progress"
+        android:layout_width = "0dp"
+        android:layout_height = "wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/constraintL_start_pause"
+        app:layout_constraintStart_toEndOf="@id/has_played"
+        app:layout_constraintEnd_toStartOf="@id/exo_duration"
+        />
+
+    <TextView
+        android:id = "@+id/exo_position"
+        android:layout_width = "0dp"
+        android:layout_height = "wrap_content"
+        android:layout_marginStart = "8dp"
+        android:layout_marginBottom = "8dp"
+        android:text = "text_example"
+        android:textColor = "@color/white"
+        app:layout_constraintBottom_toTopOf = "@+id/exo_progress"
+        app:layout_constraintEnd_toStartOf = "@+id/exo_duration"
+        app:layout_constraintStart_toStartOf = "@+id/exo_progress" />
+
+      <TextView
+          android:id = "@+id/exo_duration"
+          android:layout_width = "wrap_content"
+          android:layout_height = "wrap_content"
+          android:layout_gravity = "center_vertical"
+          android:layout_marginEnd = "15dp"
+          android:gravity = "start"
+          android:minWidth = "@dimen/qb_px_46"
+          android:paddingStart = "10dp"
+          android:paddingTop = "15dp"
+          android:paddingBottom = "10dp"
+          android:text = "00:00"
+          android:textColor = "@android:color/white"
+          android:textSize = "14sp"
+          app:layout_constraintBottom_toBottomOf = "@+id/exo_progress"
+          app:layout_constraintEnd_toEndOf = "parent"
+          app:layout_constraintStart_toEndOf = "@+id/exo_progress"
+          app:layout_constraintTop_toTopOf = "@+id/exo_progress" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

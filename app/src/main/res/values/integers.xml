@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="angle_rtl_180">180</integer>
+    <integer name="rtl_180">180</integer>
+    <integer name="rtl_angle">180</integer>
+</resources>

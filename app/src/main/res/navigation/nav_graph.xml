@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation
+    xmlns:android = "http://schemas.android.com/apk/res/android"
+    xmlns:app = "http://schemas.android.com/apk/res-auto"
+    xmlns:tools = "http://schemas.android.com/tools"
+    android:id = "@+id/bottomNav"
+    app:startDestination="@id/video">
+
+    <fragment
+        android:id="@+id/video"
+        android:name="com.musicplayer.android.video.VideoDashFrag"
+        android:label="Video"
+        tools:layout="@layout/video_dash_frag" >
+        <action
+        android:id = "@+id/action_video_to_music"
+        app:destination = "@id/music" />
+    </fragment>
+    <fragment
+        android:id="@+id/music"
+        android:name="com.musicplayer.android.music.MusicFragment"
+        android:label="Music"
+        tools:layout="@layout/fragment_music" >
+        <action
+        android:id = "@+id/action_music_to_discover"
+        app:destination = "@id/discover" />
+    </fragment>
+    <fragment
+        android:id="@+id/discover"
+        android:name="com.musicplayer.android.discover.DiscoverFragment"
+        android:label="Video"
+        tools:layout="@layout/video_dash_frag" >
+        <action
+        android:id = "@+id/action_discover_to_me"
+        app:destination = "@id/me" />
+    </fragment>
+    <fragment
+        android:id="@+id/me"
+        android:name="com.musicplayer.android.fragment.MeFragment"
+        android:label="Me"
+        tools:layout="@layout/fragment_me" >
+        <action
+        android:id = "@+id/action_me_to_video"
+        app:destination = "@id/video" />
+    </fragment>
+</navigation>

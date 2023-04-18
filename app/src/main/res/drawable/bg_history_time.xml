@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+    <shape
+        xmlns:android = "http://schemas.android.com/apk/res/android"
+        xmlns:aapt = "http://schemas.android.com/aapt"
+        xmlns:app = "http://schemas.android.com/apk/res-auto">
+
+<solid android:color = "@color/black_half" />
+
+<corners android:radius = "2dp" />
+
+</shape>

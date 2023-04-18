@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android = "http://schemas.android.com/apk/res/android"
+    xmlns:tools = "http://schemas.android.com/tools"
+    xmlns:app = "http://schemas.android.com/apk/res-auto"
+    android:orientation = "vertical"
+    android:layout_width = "wrap_content"
+    android:layout_height = "wrap_content">
+<RelativeLayout
+    android:layout_height = "@dimen/qb_px_81"
+    android:layout_width = "@dimen/qb_px_143"
+    android:id = "@+id/rlParent"
+    android:background="@color/black"
+    android:layout_margin="@dimen/dimen_10x"
+    tools:ignore = "UselessParent">
+
+    <com.google.android.material.imageview.ShapeableImageView
+    android:layout_height = "match_parent"
+    android:layout_width = "match_parent"
+    android:id = "@+id/img_video_history"
+    app:shapeAppearanceOverlay ="@style/curved"
+    />
+
+    <FrameLayout
+        android:layout_width = "match_parent"
+        android:layout_height = "@dimen/qb_px_8"
+        android:layout_alignParentBottom="true">
+    <ProgressBar
+    android:layout_height = "@dimen/qb_px_2"
+    android:layout_width = "match_parent"
+    android:id = "@+id/video_history_progress"
+    style = "?android:attr/progressBarStyleHorizontal"
+    android:progress = "20"
+    android:max = "100"
+    android:background = "@color/bg_progress"
+    android:layout_gravity = "bottom" />
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_height = "@dimen/qb_px_15"
+        android:layout_width = "wrap_content"
+        android:id = "@+id/llDuration"
+        android:layout_alignParentBottom = "true"
+        android:background = "@drawable/bg_history_time"
+        android:layout_alignParentEnd = "true"
+        android:layout_marginEnd = "@dimen/qb_px_4"
+        android:minWidth = "@dimen/qb_px_41"
+        android:layout_marginBottom = "@dimen/qb_px_4"
+        android:gravity = "center"
+        tools:ignore = "RelativeOverlap">
+
+    <ImageView
+    android:layout_height = "@dimen/qb_px_12"
+    android:layout_width = "@dimen/qb_px_12"
+    android:src = "@drawable/home_history_play"
+    android:padding = "@dimen/qb_px_2"
+    android:contentDescription = "@string/image" />
+
+    <TextView
+    android:layout_height = "wrap_content"
+    android:layout_width = "wrap_content"
+    android:id = "@+id/video_history_duration"
+    android:layout_marginEnd = "@dimen/qb_px_3"
+    android:text="00:00"
+    android:textColor = "@color/white"
+    android:textSize = "@dimen/qb_px_10" />
+
+    </LinearLayout>
+
+    <ImageView
+    android:layout_height = "wrap_content"
+    android:layout_width = "wrap_content"
+    android:id = "@+id/ivCollect"
+    android:layout_alignParentEnd = "true"
+    android:layout_marginEnd = "@dimen/qb_px_4"
+    android:src = "@drawable/icons_collect"
+    android:layout_alignParentTop = "true"
+    android:layout_marginTop = "@dimen/qb_px_4" />
+    <ImageView
+    android:id = "@+id/ivYouTube_history"
+    android:layout_width = "wrap_content"
+    android:layout_height = "wrap_content"
+    android:layout_marginStart = "@dimen/qb_px_5"
+    android:layout_marginTop = "@dimen/qb_px_5"
+    android:layout_marginEnd = "@dimen/qb_px_5"
+    android:layout_marginBottom = "@dimen/qb_px_5"
+    android:contentDescription = "@string/youtube_cover"
+    android:src = "@drawable/youtube_cover" />
+</RelativeLayout>
+</LinearLayout>

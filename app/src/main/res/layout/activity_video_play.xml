@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android = "http://schemas.android.com/apk/res/android"
+    xmlns:tools = "http://schemas.android.com/tools"
+    xmlns:app = "http://schemas.android.com/apk/res-auto">
+<data>
+
+</data>
+  <LinearLayout
+    android:layout_width = "match_parent"
+    android:layout_height = "match_parent"
+    android:orientation = "vertical"
+    tools:context = ".video.VideoPlayActivity">
+
+  <!--<com.google.android.youtube.player.YouTubePlayerView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:id="@+id/ytPlayer"
+      app:layout_constraintTop_toTopOf="parent"/>-->
+
+    <com.google.android.exoplayer2.ui.PlayerView
+        android:id="@+id/player_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:resize_mode="fit"
+        app:hide_on_touch="true"
+        app:show_timeout="5000"
+        android:background="@color/black"
+        />
+       <!-- app:use_controller="false"
+        app:player_layout_id="@layout/exo_player_view"
+        app:controller_layout_id="@layout/video_controller"-->
+       <!-- app:exo_playback_control_layout_id="@layout/my_playback_controls"-->
+
+    <ImageButton
+        android:id="@+id/back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:contentDescription="@string/back_icon"
+        android:padding="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:rotationX="@integer/angle_rtl_180"
+        app:srcCompat="@drawable/video_ic_arrow_right" />
+  </LinearLayout>
+</layout>

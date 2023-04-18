@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:paddingHorizontal="@dimen/dp_20"
+    android:layout_height="wrap_content">
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_my_dialog"
+        android:orientation="vertical"
+        android:padding="@dimen/x20"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/closeBt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:paddingHorizontal="@dimen/x4"
+            android:rotation="45"
+            android:text="+"
+            android:textColor="#F5F5F5"
+            android:textSize="40sp" />
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/guide_1"
+            android:textAlignment="center"
+            android:textColor="@color/text_1"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/subtitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/x20"
+            android:text="@string/guide_1"
+            android:textAlignment="center"
+            android:textColor="@color/text_1"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/positive_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/x20"
+            android:background="@drawable/bg_solid_btn"
+            android:paddingHorizontal="@dimen/x6"
+            android:paddingVertical="@dimen/x10"
+            android:text="Find all"
+            android:textAlignment="center"
+            android:textColor="@color/text_1"
+            android:textSize="@dimen/sp16"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/negative_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/x10"
+            android:background="@drawable/bg_round_btn"
+            android:paddingHorizontal="@dimen/x6"
+            android:paddingVertical="@dimen/x10"
+            android:text="Find standard media"
+            android:textAlignment="center"
+            android:textColor="@color/text_2"
+            android:textSize="@dimen/sp16"
+            android:textStyle="bold" />
+
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

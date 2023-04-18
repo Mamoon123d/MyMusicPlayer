@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="@dimen/x120"
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/folder_iv"
+            android:layout_width="@dimen/qb_px_70"
+            android:layout_height="@dimen/qb_px_70"
+            android:contentDescription="@string/image_icon"
+            android:scaleType="fitXY"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/folder" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/cover_icon"
+            android:layout_width="@dimen/qb_px_20"
+            android:layout_height="@dimen/qb_px_20"
+            app:layout_constraintBottom_toBottomOf="@+id/folder_iv"
+            app:layout_constraintEnd_toEndOf="@+id/folder_iv"
+            app:layout_constraintStart_toStartOf="@+id/folder_iv"
+            app:layout_constraintTop_toTopOf="@+id/folder_iv"
+            app:srcCompat="@drawable/ic_whatsapp_share" />
+
+        <TextView
+            android:id="@+id/folder_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="folder name"
+            android:textColor="@color/text_3"
+            android:textSize="@dimen/sp16"
+            android:maxLines="2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/folder_iv" />
+
+        <TextView
+            android:id="@+id/total_video"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2 videos"
+            android:textColor="@color/text_5"
+            android:textSize="@dimen/sp14"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/folder_tv" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
