@@ -14,6 +14,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.musicplayer.android.base.BaseActivity
 import com.musicplayer.android.databinding.ActivityMainBinding
 import com.musicplayer.android.model.*
+import com.musicplayer.android.music.MPlayerActivity
 import com.musicplayer.android.utils.view.MyCustomDialog
 import com.musicplayer.android.utils.view.MyCustomDialog.Companion.STYLE_1
 
@@ -186,27 +187,27 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         })*//*
     }*/
 
-   /* private fun requestRuntimePermission(): Boolean{
-        if (ActivityCompat.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE)!=PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(this, arrayOf(WRITE_EXTERNAL_STORAGE),13)
-            return false
-        }
-        return true
-    }
+    /* private fun requestRuntimePermission(): Boolean{
+         if (ActivityCompat.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE)!=PackageManager.PERMISSION_GRANTED){
+             ActivityCompat.requestPermissions(this, arrayOf(WRITE_EXTERNAL_STORAGE),13)
+             return false
+         }
+         return true
+     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode==13){
-            if (grantResults[0]==PackageManager.PERMISSION_GRANTED)
-                Toast.makeText(this, "PERMISSION_GRANTED", Toast.LENGTH_SHORT).show()
-            else
-                ActivityCompat.requestPermissions(this, arrayOf(WRITE_EXTERNAL_STORAGE),13)
-        }
-    }*/
+     override fun onRequestPermissionsResult(
+         requestCode: Int,
+         permissions: Array<out String>,
+         grantResults: IntArray
+     ) {
+         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+         if (requestCode==13){
+             if (grantResults[0]==PackageManager.PERMISSION_GRANTED)
+                 Toast.makeText(this, "PERMISSION_GRANTED", Toast.LENGTH_SHORT).show()
+             else
+                 ActivityCompat.requestPermissions(this, arrayOf(WRITE_EXTERNAL_STORAGE),13)
+         }
+     }*/
     override fun onResume() {
         super.onResume()
         //for sorting
@@ -216,37 +217,44 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
          }*/
     }
 
-   /* @SuppressLint("Recycle", "Range")
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun getAllVideo(): ArrayList<Video>{
-        val tempList = ArrayList<Video>()
-        val projection = arrayOf(
-            MediaStore.Video.Media.TITLE, MediaStore.Video.Media.SIZE,
-            MediaStore.Video.Media._ID, MediaStore.Video.Media.BUCKET_DISPLAY_NAME, MediaStore.Video.Media.DATA,
-            MediaStore.Video.Media.DATE_ADDED, MediaStore.Video.Media.DURATION)
-        val cursor = this.contentResolver.query(
-            MediaStore.Video.Media.EXTERNAL_CONTENT_URI,projection,null,null,
-            MediaStore.Video.Media.DATE_ADDED + "DESC")
-        if (cursor!=null)
-            if (cursor.moveToNext())
-                do{
-                    val titleC = cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.TITLE))
-                    val idC = cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media._ID))
-                    val folderC = cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.BUCKET_DISPLAY_NAME))
-                    val sizeC = cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.SIZE))
-                    val pathC = cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.DATA))
-                    val durationC = cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.DURATION)).toLong()
-                    try {
-                        val file = File(pathC)
-                        val artUriC = Uri.fromFile(file)
-                        val video = Video(title=titleC, id=idC, folderName = folderC,
-                            duration = durationC, size=sizeC, path = pathC, artURi = artUriC
-                        )
-                        if (file.exists()) tempList.add(video)
-                    }catch (_:java.lang.Exception){}
-                }while (cursor.moveToNext())
-        cursor?.close()
-        return tempList
+    /* @SuppressLint("Recycle", "Range")
+     @RequiresApi(Build.VERSION_CODES.O)
+     private fun getAllVideo(): ArrayList<Video>{
+         val tempList = ArrayList<Video>()
+         val projection = arrayOf(
+             MediaStore.Video.Media.TITLE, MediaStore.Video.Media.SIZE,
+             MediaStore.Video.Media._ID, MediaStore.Video.Media.BUCKET_DISPLAY_NAME, MediaStore.Video.Media.DATA,
+             MediaStore.Video.Media.DATE_ADDED, MediaStore.Video.Media.DURATION)
+         val cursor = this.contentResolver.query(
+             MediaStore.Video.Media.EXTERNAL_CONTENT_URI,projection,null,null,
+             MediaStore.Video.Media.DATE_ADDED + "DESC")
+         if (cursor!=null)
+             if (cursor.moveToNext())
+                 do{
+                     val titleC = cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.TITLE))
+                     val idC = cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media._ID))
+                     val folderC = cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.BUCKET_DISPLAY_NAME))
+                     val sizeC = cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.SIZE))
+                     val pathC = cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.DATA))
+                     val durationC = cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.DURATION)).toLong()
+                     try {
+                         val file = File(pathC)
+                         val artUriC = Uri.fromFile(file)
+                         val video = Video(title=titleC, id=idC, folderName = folderC,
+                             duration = durationC, size=sizeC, path = pathC, artURi = artUriC
+                         )
+                         if (file.exists()) tempList.add(video)
+                     }catch (_:java.lang.Exception){}
+                 }while (cursor.moveToNext())
+         cursor?.close()
+         return tempList
+     }
+ */
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (!MPlayerActivity.isPlaying && MPlayerActivity.musicService!=null){
+            exitApplication()
+        }
     }
-*/
 }

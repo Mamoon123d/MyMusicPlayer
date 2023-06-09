@@ -37,6 +37,7 @@ class AllSongMusicFragment : BaseFragment<FragmentAllSongMusicBinding>() {
                         val b = Bundle()
                         b.putInt("pos", position)
                         goActivity(MPlayerActivity(), b)
+                        //showMsg(MainActivity.audioList[position].artist)
                     }
                 })
             }

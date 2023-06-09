@@ -1,44 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android = "http://schemas.android.com/apk/res/android"
-          xmlns:tools = "http://schemas.android.com/tools">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name = "android.permission.INTERNET" />
-    <uses-permission android:name = "android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission
-        android:name = "android.permission.WRITE_EXTERNAL_STORAGE"
-        tools:ignore = "ScopedStorage" />
-     <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
-    <uses-permission android:name = "android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name = "android.permission.READ_MEDIA_IMAGES" />
-    <uses-permission android:name = "android.permission.READ_MEDIA_VIDEO" />
-    <uses-permission android:name = "android.permission.READ_MEDIA_AUDIO" />
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission
-        android:name = "android.permission.MANAGE_EXTERNAL_STORAGE"
-        tools:ignore = "ScopedStorage" />
+        android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
+    <uses-permission android:name="android.permission.ACTION_MANAGE_WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS"
+        tools:ignore="ProtectedPermissions" />
+
 
     <application
-        android:allowBackup = "true"
-        android:dataExtractionRules = "@xml/data_extraction_rules"
-        android:fullBackupContent = "@xml/backup_rules"
-        android:icon = "@mipmap/ic_launcher"
-        android:label = "@string/app_name"
-        android:requestLegacyExternalStorage = "true"
-        android:supportsRtl = "true"
-        android:theme = "@style/Theme.MusicPlayer"
+        android:name=".MyApplication"
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:requestLegacyExternalStorage="true"
+        android:supportsRtl="true"
         android:largeHeap="true"
         android:hardwareAccelerated="false"
-        android:usesCleartextTraffic = "true"
-        tools:targetApi = "31">
+        android:theme="@style/Theme.MusicPlayer"
+        android:usesCleartextTraffic="true"
+        tools:targetApi="31">
         <activity
-            android:name = ".video.FolderVideoActivity"
+            android:name=".video.FolderVideoActivity"
             android:screenOrientation="portrait"
-            android:exported = "false"
-            tools:ignore = "LockedOrientationActivity" />
+            android:exported="false"
+            tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name = ".video.VideoPlayActivity"
-            android:configChanges = "keyboardHidden|orientation|screenSize"
-            android:exported = "false"
-            android:theme = "@style/Theme.AppCompat.DayNight.NoActionBar">
+            android:name=".video.VideoPlayActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
 
         </activity>
         <activity
@@ -75,6 +83,14 @@
         <activity
             android:name="com.musicplayer.android.music.MPlayerActivity"
             android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar" />
+
+        <service
+            android:name=".music.MusicService"
+            android:exported="true" />
+        <receiver
+            android:name=".music.NotificationReceiver"
+            android:enabled="true"
+            android:exported="true" />
     </application>
 
 </manifest>

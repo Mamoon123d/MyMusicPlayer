@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/selectable_item_background"
+        android:paddingStart="12dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="4dp"
+        android:paddingBottom="8dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/clOrder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="34dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/tvOrder"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxLines="1"
+                android:minWidth="34dp"
+                android:text="1"
+                android:textColor="@color/text_1"
+                android:textSize="15sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.musicplayer.android.utils.view.visualizer.BarVisualizer
+                android:id="@+id/bar"
+                android:layout_width="@dimen/qb_px_50"
+                android:layout_height="@dimen/qb_px_50"
+                android:visibility="gone"
+                app:avColor="@color/text_2"
+                app:avDensity="0.5"
+                app:avSpeed="medium"
+                app:avType="outline"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+            <!--<MediaController
+                android:id = "@+id/playingView"
+                android:layout_width = "16dp"
+                android:layout_height = "18dp"
+                app:layout_constraintBottom_toBottomOf = "parent"
+                app:layout_constraintEnd_toEndOf = "parent"
+                app:layout_constraintStart_toStartOf= "parent"
+                app:layout_constraintTop_toTopOf = "parent"
+                app:pointer_num = "4"
+                app:pointer_width = "2" />-->
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <TextView
+            android:id="@+id/tvSongName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="2dp"
+            android:ellipsize="end"
+            android:gravity="start"
+            android:maxLines="2"
+            android:paddingHorizontal="@dimen/x6"
+            android:text="Audio Name"
+            android:textAlignment="viewStart"
+            android:textColor="@color/text_1"
+            android:textSize="15sp"
+            app:layout_constraintBottom_toTopOf="@+id/tvArtistAndAlbum"
+            app:layout_constraintEnd_toStartOf="@+id/ivClose"
+            app:layout_constraintStart_toEndOf="@+id/clOrder"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvArtistAndAlbum"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:gravity="start"
+            android:maxLines="1"
+            android:paddingHorizontal="5dp"
+            android:text="audio description"
+            android:textAlignment="viewStart"
+            android:textColor="@color/text_1"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/ivClose"
+            app:layout_constraintStart_toStartOf="@+id/tvSongName"
+            app:layout_constraintTop_toBottomOf="@+id/tvSongName" />
+
+
+        <ImageView
+            android:id="@+id/ivClose"
+            android:layout_width="@dimen/x20"
+            android:layout_height="@dimen/x20"
+            android:background="@drawable/selectable_item_background_oval"
+            android:padding="@dimen/x4"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_close"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@color/text_1" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

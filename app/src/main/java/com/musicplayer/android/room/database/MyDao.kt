@@ -2,9 +2,7 @@ package com.musicplayer.android.room.database
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.musicplayer.android.room.data.FavoriteData
-import com.musicplayer.android.room.data.PlayListData
-import com.musicplayer.android.room.data.VideoItemPlData
+import com.musicplayer.android.room.data.*
 
 @Dao
 interface MyDao {
@@ -52,5 +50,46 @@ interface MyDao {
     @Query("SELECT COUNT() FROM favorite")
     fun totalFavorites(): LiveData<Long>
 
+    //============ music favorite ==============================
+    @Query("select * from music_favorite ")
+    fun getMusicFavList(): LiveData<List<MusicFavoriteData>>
 
+    @Insert()
+    suspend fun insertMusicFavorite(data: MusicFavoriteData)
+
+    @Delete
+    suspend fun deleteMusicFavorite(data: MusicFavoriteData)
+
+    @Query("SELECT COUNT() FROM music_favorite WHERE music_id = :id")
+    fun isMusicFavoriteExists(id: String): LiveData<Int>
+
+    @Query("SELECT COUNT() FROM music_favorite")
+    fun totalMusicFavorites(): LiveData<Long>
+
+    //=================== Music Playlist ==========================
+    @Query("select * from music_playlist ")
+    fun getMusicPlayList(): LiveData<List<MusicPlayListData>>
+
+    @Query("select id from music_playlist order by id DESC limit 1")
+    fun getMusicPlaylistId(): LiveData<Long>?
+
+    @Insert()
+    suspend fun insertMusicPlaylist(data: MusicPlayListData)
+
+    @Delete
+    suspend fun deleteMusicPlaylist(data: MusicPlayListData)
+
+    @Update
+    suspend fun updateMusicPlaylist(data: MusicPlayListData)
+
+    //==================== music item in playlist =======================
+
+    @Query("select * from PL_MUSIC where pl_id =:plId")
+    fun getMusicsInPl(plId: Int): LiveData<List<MusicItemPlData>>
+
+    @Insert()
+    suspend fun addMusicInPl(data: MusicItemPlData)
+
+    @Delete
+    suspend fun removeMusicInPl(data: MusicItemPlData)
 }

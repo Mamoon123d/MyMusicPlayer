@@ -17,7 +17,7 @@ class MusicAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle) : Fra
                 AllSongMusicFragment()
             }
             1 -> {
-                PlaylistMusicFragment()
+                MusicPlaylistFrag()
             }
             2 -> {
                 FolderMusicFragment()

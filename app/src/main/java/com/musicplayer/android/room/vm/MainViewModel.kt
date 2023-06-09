@@ -3,9 +3,7 @@ package com.musicplayer.android.room.vm
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.musicplayer.android.room.data.FavoriteData
-import com.musicplayer.android.room.data.PlayListData
-import com.musicplayer.android.room.data.VideoItemPlData
+import com.musicplayer.android.room.data.*
 import com.musicplayer.android.room.repo.Repository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -69,23 +67,82 @@ class MainViewModel(private val repo: Repository) : ViewModel() {
         }
     }
 
-    fun isFavoriteExists(videoId:String):LiveData<Int>{
+    fun isFavoriteExists(videoId: String): LiveData<Int> {
 
         return repo.isFavorite(videoId)
     }
 
-    fun totalFavorite():LiveData<Long>{
+    fun totalFavorite(): LiveData<Long> {
         return repo.totalFavorite()
     }
 
-/*
-     fun isExistsTD(td: Int): Boolean {
-         var isExtsts: Boolean? = false
+    //================== music favorite ================
+
+    fun getMusicFavorites(): LiveData<List<MusicFavoriteData>> {
+        return repo.getMusicFavorites()
+    }
+
+    fun addMusicFavorite(data: MusicFavoriteData) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repo.addMusicFavorite(data)
+        }
+    }
+
+    fun removeMusicFavorite(data: MusicFavoriteData) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repo.removeMusicFavorite(data)
+        }
+    }
+
+    fun isMusicFavoriteExists(musicId: String): LiveData<Int> {
+        return repo.isMusicFavorite(musicId)
+    }
+
+    fun totalMusicFavorite(): LiveData<Long> {
+        return repo.totalMusicFavorite()
+    }
+
+    //===================== Music Playlist =============================
+    fun getMusicPl(): LiveData<List<MusicPlayListData>> {
+        return repo.getMusicPl()
+    }
+
+    fun getMusicPlId():LiveData<Long>?{
+        return repo.getMusicPlId()
+    }
+     fun addMusicPl(data: MusicPlayListData) {
+        viewModelScope.launch(Dispatchers.IO) {
+         repo.addMusicPl(data)
+        }
+    }
+
+     fun removeMusicPl(data: MusicPlayListData) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repo.removeMusicPl(data)
+        }
+    }
+
+     fun updateMusicPl(data: MusicPlayListData) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repo.updateMusicPl(data)
+        }
+    }
+
+    //=============== Music item in playlist ================
+    fun getMusicsInPl(plId: Int): LiveData<List<MusicItemPlData>>{
+        return repo.getMusicsInPl(plId)
+    }
+
+     fun addMusicInPl(data: MusicItemPlData){
+        viewModelScope.launch(Dispatchers.IO) {
+             repo.addMusicInPl(data)
+        }
+    }
+
+     fun removeMusicInPl(data: MusicItemPlData){
          viewModelScope.launch(Dispatchers.IO) {
-             isExtsts = repo.isExistsTd(td)
-             Log.d("isExistsTD","is exists : ${repo.isExistsTd(td)}")
+             repo.removeMusicInPl(data)
          }
-         return isExtsts!!
-     }*/
+    }
 
 }

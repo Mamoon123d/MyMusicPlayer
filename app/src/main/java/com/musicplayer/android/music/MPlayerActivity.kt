@@ -1,24 +1,87 @@
 package com.musicplayer.android.music
 
-import android.content.ContentUris
+import android.Manifest
+import android.app.Dialog
+import android.content.*
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.graphics.ImageDecoder
+import android.graphics.BitmapFactory
+import android.media.MediaPlayer
+import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
+import android.os.Handler
+import android.os.IBinder
+import android.os.Looper
 import android.provider.MediaStore
+import android.provider.Settings
 import android.text.TextUtils
+import android.text.format.DateUtils
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.Window
+import android.widget.SeekBar
+import android.widget.SeekBar.OnSeekBarChangeListener
+import androidx.core.app.ActivityCompat
+import androidx.lifecycle.ViewModelProvider
+import androidx.palette.graphics.Palette
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.musicplayer.android.MainActivity
 import com.musicplayer.android.R
+import com.musicplayer.android.adapter.MusicBsAdapter
+import com.musicplayer.android.adapter.MusicPlAdapter
+import com.musicplayer.android.adapter.SpeedPlayAdapter
+import com.musicplayer.android.adapter.TimeAdapter
 import com.musicplayer.android.base.BaseActivity
-import com.musicplayer.android.databinding.MplayerActivityBinding
-import com.musicplayer.android.model.MainMusicData
+import com.musicplayer.android.base.BaseRvAdapter
+import com.musicplayer.android.base.BaseRvAdapter2
+import com.musicplayer.android.databinding.*
+import com.musicplayer.android.model.*
+import com.musicplayer.android.room.data.MusicFavoriteData
+import com.musicplayer.android.room.data.MusicItemPlData
+import com.musicplayer.android.room.data.MusicPlayListData
+import com.musicplayer.android.room.database.Db
+import com.musicplayer.android.room.factory.MainMvFactory
+import com.musicplayer.android.room.repo.Repository
+import com.musicplayer.android.room.vm.MainViewModel
+import com.musicplayer.android.utils.view.visualizer.CircleVisualizer
+import java.io.File
 
 
-class MPlayerActivity : BaseActivity<MplayerActivityBinding>() {
+@Suppress("DEPRECATION")
+class MPlayerActivity : BaseActivity<MplayerActivityBinding>(), ServiceConnection,
+    MediaPlayer.OnCompletionListener {
+
+    private var mainViewModel: MainViewModel? = null
+
     companion object {
         lateinit var audioList: ArrayList<MainMusicData>
+        public var isPlaying: Boolean = false
+        public var songPosition: Int = -1
+
+        // var mediaPlayer: MediaPlayer? = null
+        var musicService: MusicService? = null
+        lateinit var mpBinding: MplayerActivityBinding
+        public var isRepeat = false
+        var min15: Boolean = false
+        lateinit var audioVisual: CircleVisualizer
+        var isFavorite: Boolean = false
+
+        //ringtone
+        private const val PHONE_RINGTONE: Int = 1
+        private const val ALARM_RINGTONE: Int = 2
+        private const val NOTIFICATION_RINGTONE: Int = 3
+        private var isForPhone: Boolean = false
+        private var isForAlarm: Boolean = false
+        private var isForNoti: Boolean = false
+
+        private const val CODE_WRITE_SETTINGS_PERMISSION: Int = 124
+
+
     }
 
     override fun setLayoutId(): Int {
@@ -26,9 +89,569 @@ class MPlayerActivity : BaseActivity<MplayerActivityBinding>() {
     }
 
     override fun initM() {
+        //for db
+        initializeDb()
         setTb()
         initializeLayout()
-        createPlayer()
+
+        //for share file
+        binding.shareImg.setOnClickListener {
+            shareFile()
+        }
+
+        //for start service
+        binding.playPauseBt.setOnClickListener {
+            if (isPlaying)
+                pauseMusic()
+            else
+                playMusic()
+        }
+
+        binding.nextBt.setOnClickListener {
+            //for next music
+
+            prevNextMusic(true)
+
+        }
+        binding.backBt.setOnClickListener {
+            //for previous music
+            prevNextMusic(false)
+        }
+
+        binding.seekBar.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
+            override fun onProgressChanged(seekB: SeekBar?, progress: Int, fromUser: Boolean) {
+                if (fromUser) {
+                    musicService!!.mediaPlayer!!.seekTo(progress)
+                }
+            }
+
+            override fun onStartTrackingTouch(p0: SeekBar?) = Unit
+
+            override fun onStopTrackingTouch(p0: SeekBar?) = Unit
+
+        })
+
+        binding.repeatBt.setOnClickListener {
+            if (!isRepeat) {
+                isRepeat = true
+            } else {
+                isRepeat = false
+            }
+        }
+
+        /* binding.listenTimeBt.setOnClickListener {
+             //set 15 minutes
+             //set 30 minutes
+             //after that stop music
+             //if 15 min true
+
+         }*/
+        binding.favMusicBt.setOnClickListener {
+            val data = audioList[songPosition]
+            val favData = MusicFavoriteData(
+                id = data.id.trim().toLong(),
+                music_id = data.id.trim().toLong(),
+                title = data.title,
+                duration = data.duration.toString(),
+                folderName = data.folderName,
+                size = data.size,
+                path = data.path,
+                artUri = data.artUri,
+                pixels = data.pixels,
+                album = data.album,
+                artist = data.artist,
+                albumId = data.albumId,
+                isFavourite = data.isFavourite
+            )
+            if (isFavorite) {
+                mainViewModel!!.removeMusicFavorite(favData)
+            } else {
+                mainViewModel!!.addMusicFavorite(favData)
+            }
+        }
+        binding.addPl.setOnClickListener {
+            addPlaylist()
+        }
+
+        binding.listenTimeBt.setOnClickListener {
+            val bs = BottomSheetDialog(mActivity)
+            val binding_sheet = TimeSheetBinding.inflate(LayoutInflater.from(mActivity))
+            bs.setContentView(binding_sheet.root)
+            val list = mutableListOf<String>(
+                "Stop after this track",
+                "15 minutes later",
+                "30 minutes later",
+                "45 minutes later",
+                "60 minutes later",
+                "Custom"
+            )
+            binding_sheet.rv.apply {
+                adapter = TimeAdapter(mActivity, list).apply {
+                    setOnItemClickListener(object : BaseRvAdapter.OnItemClickListener {
+                        override fun onItemClick(v: View?, position: Int) {
+                            showMsg(list[position])
+
+                            when (position) {
+                                0 -> {
+                                    //stop after track
+                                    /*Thread {
+                                        Thread.sleep(15 * 60000)
+                                        if (min15) exitApplication()
+                                    }.start()*/
+                                }
+                                1 -> {
+                                    min15 = true
+                                    Thread {
+                                        Thread.sleep(15 * 60000)
+                                        if (min15) exitApplication()
+                                    }.start()
+                                }
+
+                            }
+                            bs.dismiss()
+                        }
+
+                    })
+                }
+                layoutManager = LinearLayoutManager(mActivity)
+            }
+            binding_sheet.back.setOnClickListener {
+                bs.dismiss()
+            }
+            bs.show()
+
+        }
+
+        binding.echoBt.setOnClickListener {
+            /*  val bs = BottomSheetDialog(mActivity)
+              val binding_sheet = EchoLayoutBinding.inflate(LayoutInflater.from(mActivity))
+              bs.setContentView(binding_sheet.root)*/
+
+            // val i =  Intent(AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION)
+            // i.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, packageName)
+            // i.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, musicService!!.mediaPlayer!!.audioSessionId)
+            //startActivity(i)
+
+
+        }
+
+        binding.moreOptionBt.setOnClickListener {
+            val bs = BottomSheetDialog(mActivity)
+            val binding_sheet = MoreOptionLayBinding.inflate(LayoutInflater.from(mActivity))
+            bs.setContentView(binding_sheet.root)
+            binding_sheet.ringCon.setOnClickListener {
+                showRingtoneOpt()
+
+                bs.dismiss()
+            }
+
+            binding_sheet.infoCon.setOnClickListener {
+                info()
+            }
+
+            binding_sheet.speedCon.setOnClickListener {
+                showSpeed()
+            }
+
+            bs.show()
+
+        }
+        binding.songListBt.setOnClickListener {
+            openSongList()
+        }
+        addMusicService()
+    }
+
+    private fun shareFile() {
+
+
+        val uri = Uri.parse(audioList[songPosition].path)
+        val share = Intent(Intent.ACTION_SEND)
+        share.type = "audio/*"
+        share.putExtra(Intent.EXTRA_STREAM, uri)
+        startActivity(Intent.createChooser(share, "Share Sound File"))
+    }
+
+    private fun openSongList() {
+        val bs = BottomSheetDialog(mActivity)
+        val binding_sheet = SonglistBsBinding.inflate(LayoutInflater.from(mActivity))
+        bs.setContentView(binding_sheet.root)
+        binding_sheet.title.text = "${audioList.size} Songs"
+        binding_sheet.rv.apply {
+            adapter = MusicBsAdapter(mActivity, audioList).apply {
+                adapter
+                setOnItemCloseListener(object : MusicBsAdapter.OnItemCloseListener {
+                    override fun onItemClose(position: Int) {
+                        audioList.removeAt(position)
+                        adapter!!.notifyItemRemoved(position)
+                    }
+
+                })
+                setOnItemClickListener(object : BaseRvAdapter2.OnItemClickListener {
+                    override fun onItemClick(v: View?, position: Int) {
+                        songPosition = position
+                        setLayout()
+                        createMediaPlayer()
+                        adapter!!.notifyDataSetChanged()
+
+                    }
+
+                })
+            }
+            layoutManager = LinearLayoutManager(mActivity)
+        }
+        bs.show()
+
+
+    }
+
+    private fun showSpeed() {
+        val bs = BottomSheetDialog(mActivity)
+        val binding_sheet = SpeedSheetBinding.inflate(LayoutInflater.from(mActivity))
+        bs.setContentView(binding_sheet.root)
+        binding_sheet.rv.apply {
+            adapter = SpeedPlayAdapter(
+                mActivity,
+                listOf("2.0x", "1.5x", "1.0x", "0.75x", "0.5x", "0.25x")
+            ).apply {
+                setOnItemClickListener(object : BaseRvAdapter.OnItemClickListener {
+                    override fun onItemClick(v: View?, position: Int) {
+                        showMsg(list[position])
+                    }
+
+                })
+            }
+            layoutManager = LinearLayoutManager(mActivity)
+
+        }
+
+        bs.show()
+
+
+    }
+
+    private fun checkSystemWritePermission(): Boolean {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (Settings.System.canWrite(mActivity))
+                return true
+            else openAndroidPermissionsMenu()
+        }
+        return false
+    }
+
+    private fun openAndroidPermissionsMenu() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val i = Intent(android.provider.Settings.ACTION_MANAGE_WRITE_SETTINGS)
+            i.data = Uri.parse("package:" + packageName)
+            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivityForResult(i, CODE_WRITE_SETTINGS_PERMISSION)
+        } else {
+            ActivityCompat.requestPermissions(
+                mActivity,
+                arrayOf(Manifest.permission.WRITE_SETTINGS),
+                CODE_WRITE_SETTINGS_PERMISSION
+            )
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == CODE_WRITE_SETTINGS_PERMISSION && Settings.System.canWrite(mActivity)) {
+            if (isForPhone)
+                setRingtone(PHONE_RINGTONE)
+            else if (isForAlarm)
+                setRingtone(ALARM_RINGTONE)
+            else if (isForNoti)
+                setRingtone(NOTIFICATION_RINGTONE)
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == CODE_WRITE_SETTINGS_PERMISSION && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (isForPhone)
+                setRingtone(PHONE_RINGTONE)
+            else if (isForAlarm)
+                setRingtone(ALARM_RINGTONE)
+            else if (isForNoti)
+                setRingtone(NOTIFICATION_RINGTONE)
+        }
+    }
+
+    private fun showRingtoneOpt() {
+        val bs = BottomSheetDialog(mActivity)
+        val binding_sheet = RingtoneLayBinding.inflate(LayoutInflater.from(mActivity))
+        bs.setContentView(binding_sheet.root)
+        binding_sheet.phoneCon.setOnClickListener {
+
+            try {
+                if (checkSystemWritePermission()) {
+                    resetRingParam()
+                    isForPhone = true
+                    setRingtone(PHONE_RINGTONE)
+                    //  showMsg("Set as ringtoon successfully ")
+                } else {
+                    showMsg("Allow modify system settings ==> ON ")
+
+                }
+            } catch (e: Exception) {
+                Log.i("ringtone", e.toString())
+                showMsg("unable to set as Ringtone ")
+            }
+
+        }
+        binding_sheet.alarmCon.setOnClickListener {
+            try {
+                if (checkSystemWritePermission()) {
+                    resetRingParam()
+                    isForAlarm = true
+                    setRingtone(ALARM_RINGTONE)
+                    //  showMsg("Set as ringtoon successfully ")
+                } else {
+                    showMsg("Allow modify system settings ==> ON ")
+
+                }
+            } catch (e: Exception) {
+                Log.i("ringtone", e.toString())
+                showMsg("unable to set as Ringtone ")
+            }
+
+        }
+        binding_sheet.notiCon.setOnClickListener {
+            try {
+                if (checkSystemWritePermission()) {
+                    resetRingParam()
+                    isForNoti = true
+                    setRingtone(NOTIFICATION_RINGTONE)
+                    //  showMsg("Set as ringtoon successfully ")
+                } else {
+                    showMsg("Allow modify system settings ==> ON ")
+
+                }
+            } catch (e: java.lang.Exception) {
+                Log.i("ringtone", e.toString())
+                showMsg("unable to set as Ringtone ")
+            }
+        }
+
+        bs.show()
+    }
+
+    private fun resetRingParam() {
+        isForPhone = false
+        isForAlarm = false
+        isForNoti = false
+    }
+
+    private fun setRingtone(type: Int) {
+        val data = audioList[songPosition]
+        val k = File(data.path) // path is a file to /sdcard/media/ringtone
+        Log.d("ringtone :", "path: " + data.path)
+
+        val values = ContentValues()
+        values.put(MediaStore.MediaColumns.DATA, k.absolutePath)
+        values.put(MediaStore.MediaColumns.TITLE, data.title)
+        values.put(MediaStore.MediaColumns.SIZE, k.length())
+        values.put(MediaStore.MediaColumns.MIME_TYPE, "audio/mp3")
+        // values.put(MediaStore.Audio.Media.ARTIST, data.artist)
+        //values.put(MediaStore.Audio.Media.DURATION, data.duration)
+        values.put(MediaStore.Audio.Media.IS_MUSIC, false)
+
+
+//Insert it into the database
+
+//Insert it into the database
+        val uri = MediaStore.Audio.Media.getContentUriForPath(k.absolutePath)
+        //val newUri = this.contentResolver.insert(uri!!, values)
+
+        //val cursor: Cursor? = mActivity.contentResolver.query(uri!!, null, MediaStore.MediaColumns.DATA + "=?", arrayOf<String>(data.path), null)
+        //if (cursor != null && cursor.moveToFirst() && cursor.count > 0) {
+        //  val id: String = cursor.getString(0)
+        values.put(MediaStore.Audio.Media.IS_RINGTONE, type == PHONE_RINGTONE)
+        values.put(MediaStore.Audio.Media.IS_NOTIFICATION, type == NOTIFICATION_RINGTONE)
+        values.put(MediaStore.Audio.Media.IS_ALARM, type == ALARM_RINGTONE)
+        //values.put(MediaStore.Audio.Media.IS_MUSIC, false)
+
+        mActivity.contentResolver.update(
+            uri!!,
+            values,
+            MediaStore.MediaColumns.DATA + "=?",
+            arrayOf<String>(k.absolutePath)
+        )
+        val newuri = ContentUris.withAppendedId(uri, data.id.trim().toLong())
+        try {
+            RingtoneManager.setActualDefaultRingtoneUri(
+                mActivity,
+                RingtoneManager.TYPE_RINGTONE,
+                newuri
+            )
+            when (type) {
+                PHONE_RINGTONE -> showMsg("successfully set as Phone ringtone")
+                ALARM_RINGTONE -> showMsg("successfully set as Alarm ringtone")
+                NOTIFICATION_RINGTONE -> showMsg("successfully set as Notification ringtone")
+            }
+
+        } catch (t: Throwable) {
+            t.printStackTrace()
+        }
+        //  cursor.close()
+        // }
+
+    }
+
+    private fun addPlaylist() {
+        val bs = BottomSheetDialog(mActivity)
+        val binding_sheet = PlaylistDialogBinding.inflate(LayoutInflater.from(mActivity))
+        bs.setContentView(binding_sheet.root)
+        mainViewModel!!.getMusicPl().observe(this@MPlayerActivity) { pl ->
+            binding_sheet.plRv.apply {
+                adapter = MusicPlAdapter(mActivity, pl).apply {
+                    setOnItemClickListener(object : BaseRvAdapter.OnItemClickListener {
+                        override fun onItemClick(v: View?, position: Int) {
+                            showMsg("Add music in playlist")
+                            val data = audioList[songPosition]
+                            mainViewModel!!.addMusicInPl(
+                                MusicItemPlData(
+                                    music_id = data.id.trim().toLong(),
+                                    pl_id = pl[position].id,
+                                    title = data.title,
+                                    folderName = data.folderName,
+                                    duration = data.duration.toString(),
+                                    size = data.size,
+                                    path = data.path,
+                                    pixels = data.pixels,
+                                    artUri = data.artUri,
+                                    album = data.album,
+                                    albumId = data.albumId,
+                                    artist = data.artist,
+                                    isFavourite = data.isFavourite
+                                )
+                            )
+
+                            bs.dismiss()
+                        }
+
+                    })
+                }
+                layoutManager = LinearLayoutManager(mActivity)
+            }
+
+        }
+
+        binding_sheet.addListCon.setOnClickListener {
+            bs.dismiss()
+            insertPL()
+        }
+
+        bs.show()
+    }
+
+    private fun info() {
+        val data = audioList[songPosition]
+        val dialog = Dialog(mActivity)
+        val binding_sheet = InfoDialogBinding.inflate(LayoutInflater.from(mActivity))
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(binding_sheet.root)
+        dialog.setCancelable(false)
+        dialog.window!!.apply {
+            setLayout(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+            setBackgroundDrawableResource(android.R.color.transparent)
+        }
+        val extension = data.path.substring(data.path.lastIndexOf("."))
+        val vFile = File(data.path)
+
+        binding_sheet.titleTv.text = data.title
+        binding_sheet.resoTv.text = data.pixels
+        binding_sheet.sizeTv.text = data.size
+        binding_sheet.formatTv.text = "audio/$extension"
+        binding_sheet.pathTv.text = data.path
+        binding_sheet.durationTv.text = DateUtils.formatElapsedTime(data.duration / 1000)
+        binding_sheet.dateTv.text = vFile.lastModified().toString()
+
+        binding_sheet.negBtn.setOnClickListener {
+            dialog.dismiss()
+        }
+        dialog.show()
+
+    }
+
+    private fun insertPL() {
+        val dialog = Dialog(mActivity)
+        val binding_sheet = AddPlDialogBinding.inflate(LayoutInflater.from(mActivity))
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(binding_sheet.root)
+        dialog.window!!.apply {
+            setLayout(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+            setBackgroundDrawableResource(android.R.color.transparent)
+
+        }
+        dialog.setCancelable(false)
+        val et = binding_sheet.addPlEt
+        binding_sheet.posBtn.setOnClickListener {
+            val plName = et.text.toString().trim()
+            if (plName.isBlank()) {
+                et.error = "name is empty"
+            } else {
+                val plData = MusicPlayListData(title = plName)
+                mainViewModel!!.addMusicPl(plData)
+                showMsg("Playlist has been created")
+                var plId: Long = 1
+                mainViewModel!!.getMusicPlId()!!.observe(this) {
+                    if (it != null) {
+                        plId = it!!
+                    }
+                }
+                Handler(Looper.myLooper()!!).postDelayed({
+                    val data = audioList[songPosition]
+                    mainViewModel!!.addMusicInPl(
+                        MusicItemPlData(
+                            music_id = data.id.trim().toLong(),
+                            pl_id = plId,
+                            title = data.title,
+                            folderName = data.folderName,
+                            duration = data.duration.toString(),
+                            size = data.size,
+                            path = data.path,
+                            pixels = data.pixels,
+                            artUri = data.artUri,
+                            album = data.album,
+                            albumId = data.albumId,
+                            artist = data.artist,
+                            isFavourite = data.isFavourite
+                        )
+                    )
+                }, 200)
+                dialog.dismiss()
+            }
+            //done
+
+        }
+        binding_sheet.negBtn.setOnClickListener {
+            dialog.dismiss()
+        }
+        dialog.show()
+    }
+
+    private fun initializeDb() {
+        val dao = Db.getDatabase(mActivity).myDao()
+        val repository = Repository(dao)
+        mainViewModel =
+            ViewModelProvider(this, MainMvFactory(repository))[MainViewModel::class.java]
+    }
+
+
+    private fun addMusicService() {
+        val i = Intent(mActivity, MusicService::class.java)
+        bindService(i, this, BIND_AUTO_CREATE)
+        startService(i)
     }
 
     private fun setTb() {
@@ -38,34 +661,65 @@ class MPlayerActivity : BaseActivity<MplayerActivityBinding>() {
     }
 
     private fun initializeLayout() {
+        mpBinding = binding
         audioList = ArrayList()
         audioList = MainActivity.audioList
+        songPosition = intent.getIntExtra("pos", -1)
+
+        //from player list
+        setLayout()
+        createMediaPlayer()
+
     }
 
-    private fun createPlayer() {
-        val pos = intent.getIntExtra("pos", -1)
-        val data = audioList[pos]
-        val uriAlbum = getAlbumArtUri(data.albumId.trim().toLong())
-        // val bm = getAlbumArt(data.albumId)
-        val bitmap = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            ImageDecoder.decodeBitmap(
-                ImageDecoder.createSource(
-                    mActivity.contentResolver,
-                    uriAlbum!!
-                )
-            )
+
+    private fun setLayout() {
+        val data = audioList[songPosition]
+        /*val imageArt = if (data.artUri != null) {
+            BitmapFactory.decodeByteArray(imgArt, 0, imgArt!!.size)
         } else {
-            MediaStore.Images.Media.getBitmap(mActivity.contentResolver, uriAlbum)
-        }
-        val softwareBitmap: Bitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true)
+            BitmapFactory.decodeResource(resources, R.drawable.bg_circle)
+        }*/
+
+
+        //  val softwareBitmap: Bitmap = imageArt.copy(Bitmap.Config.ARGB_8888, true)
         binding.mainImg.apply {
 
-            if (softwareBitmap != null) {
-              //  val bm = fastblur(softwareBitmap, 10f, 100)
-              //  setImageBitmap(bm)
+            if (data.artUri != null) {
+                Glide.with(mActivity).load(data.artUri)
+                    //.transform(BlurTransformation(mActivity))
+                    .override(2, 2)
+                    .into(this)
+                val imgArt = getImageArt(data.path)
 
+                if (imgArt != null) {
+                    val bm = BitmapFactory.decodeByteArray(imgArt, 0, imgArt.size)
+                    val softwareBitmap: Bitmap = bm.copy(Bitmap.Config.ARGB_8888, false)
+
+                    Palette.from(softwareBitmap).generate() { palette ->
+                        val mutedDark = palette!!.darkMutedSwatch!!.rgb
+                        binding.mainLay.setBackgroundColor(mutedDark)
+                        // showMsg(mutedDark.toString())
+                    }
+                }
             }
+
+            /*  if (softwareBitmap != null) {
+                  Glide.with(mActivity).load(softwareBitmap)
+                      //.transform(BlurTransformation(mActivity))
+                      .override(2, 2)
+                      .into(this)
+                  Palette.from(softwareBitmap).generate(){ palette ->
+                      val mutedDark = palette!!.darkMutedSwatch!!.rgb
+                      binding.mainLay.setBackgroundColor(mutedDark)
+                     // showMsg(mutedDark.toString())
+
+                  }
+              }*/
         }
+
+
+
         binding.tvSongName.apply {
             text = data.title
             ellipsize = TextUtils.TruncateAt.MARQUEE
@@ -76,44 +730,60 @@ class MPlayerActivity : BaseActivity<MplayerActivityBinding>() {
         binding.tvArtistAndAlbum.text = data.artist
         binding.albumCover.apply {
             // setImageBitmap(bitmap)
-            Glide.with(mActivity).asBitmap().load(uriAlbum).into(binding.albumCover)
-
+            Glide.with(mActivity).asBitmap().load(data.artUri).into(binding.albumCover)
         }
-    }
 
-    /*@SuppressLint("Range")
-    private fun getAlbumArt(albumId: String): Bitmap? {
-        Log.d("album", "getAlbumArt: " + albumId)
-        val musicResolve = contentResolver
-        val smusicUri = MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI
-        val selection = MediaStore.Audio.Albums._ID + "=?"
-        val projection = arrayOf(
-            MediaStore.Audio.Albums._ID,
-            MediaStore.Audio.Albums.ALBUM_ART,
-        )
-        val music: Cursor? = musicResolve.query(
-            smusicUri, projection //should use where clause(_ID==albumid)
-            , selection, arrayOf(albumId), null
-        )
 
-        var bm: Bitmap? = null
+        //set audio visual
+        audioVisual = binding.visualizer
+        audioVisual.isDrawLine = true
 
-        //val albumIdC = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID)) ?: "0"
-        if (music != null) {
-            try {
-                val artAlbum =
-                    music.getString(music.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART)) ?: "Unknown"
-                //val thisArt: String = music.getString(x)
-                bm = BitmapFactory.decodeFile(artAlbum)
-            } catch (e: Exception) {
-                e.printStackTrace()
+        if (mainViewModel != null) {
+            initializeDb()
+        }
+
+
+        binding.favMusicBt.apply {
+            mainViewModel!!.isMusicFavoriteExists(data.id.trim()).observe(this@MPlayerActivity) {
+                if (it > 0) {
+                    setImageResource(R.drawable.ic_star)
+                    isFavorite = true
+                } else {
+                    setImageResource(R.drawable.ic_favorite)
+                    isFavorite = false
+                }
             }
 
         }
-        // val image: ImageView = findViewById<View>(R.id.image) as ImageView
-        // image.setImageBitmap(bm)
-        return bm!!
-    }*/
+
+    }
+
+    private fun createMediaPlayer() {
+
+
+        //media player
+        try {
+            if (musicService!!.mediaPlayer == null) musicService!!.mediaPlayer = MediaPlayer()
+
+            musicService!!.mediaPlayer!!.reset()
+            musicService!!.mediaPlayer!!.setDataSource(audioList[songPosition].path)
+            musicService!!.mediaPlayer!!.prepare()
+            musicService!!.mediaPlayer!!.start()
+            isPlaying = true
+            binding.playPauseBt.setImageResource(R.drawable.ic_pause_circle)
+            musicService!!.showNotification(R.drawable.ic_pause_circle)
+            binding.remainTime.text =
+                formatDuration(musicService!!.mediaPlayer!!.currentPosition.toLong())
+            binding.totalTime.text = formatDuration(musicService!!.mediaPlayer!!.duration.toLong())
+            binding.seekBar.progress = 0
+            binding.seekBar.max = musicService!!.mediaPlayer!!.duration
+            musicService!!.mediaPlayer!!.setOnCompletionListener(this)
+
+        } catch (e: Exception) {
+            return
+        }
+
+    }
 
 
     fun getAlbumArtUri(albumId: Long): Uri? {
@@ -123,220 +793,70 @@ class MPlayerActivity : BaseActivity<MplayerActivityBinding>() {
         )
     }
 
+    private fun playMusic() {
+        binding.playPauseBt.setImageResource(R.drawable.ic_pause_circle)
+        musicService!!.showNotification(R.drawable.ic_pause_circle)
+        isPlaying = true
+        musicService!!.mediaPlayer!!.start()
 
-    fun fastblur(sentBitmap: Bitmap, scale: Float, radius: Int): Bitmap? {
-        var sentBitmap = sentBitmap
-        val width = StrictMath.round(sentBitmap.width * scale)
-        val height = StrictMath.round(sentBitmap.height * scale)
-        sentBitmap = Bitmap.createScaledBitmap(sentBitmap, width, height, false)
-        val bitmap = sentBitmap.copy(sentBitmap.config, true)
-        if (radius < 1) {
-            return null
-        }
-        val w = bitmap.width
-        val h = bitmap.height
-        val pix = IntArray(w * h)
-        Log.e("pix", w.toString() + " " + h + " " + pix.size)
-        bitmap.getPixels(pix, 0, w, 0, 0, w, h)
-        val wm = w - 1
-        val hm = h - 1
-        val wh = w * h
-        val div = radius + radius + 1
-        val r = IntArray(wh)
-        val g = IntArray(wh)
-        val b = IntArray(wh)
-        var rsum: Int
-        var gsum: Int
-        var bsum: Int
-        var x: Int
-        var y: Int
-        var i: Int
-        var p: Int
-        var yp: Int
-        var yi: Int
-        var yw: Int
-        val vmin = IntArray(Math.max(w, h))
-        var divsum = div + 1 shr 1
-        divsum *= divsum
-        var dv = IntArray(256 * divsum)
-        i = 0
-        while (i < 256 * divsum) {
-            dv[i] = i / divsum
-            i++
-        }
-        yi = 0
-        yw = yi
-        val stack = Array(div) {
-            IntArray(
-                3
-            )
-        }
-        var stackpointer: Int
-        var stackstart: Int
-        var sir: IntArray
-        var rbs: Int
-        val r1 = radius + 1
-        var routsum: Int
-        var goutsum: Int
-        var boutsum: Int
-        var rinsum: Int
-        var ginsum: Int
-        var binsum: Int
-        y = 0
-        while (y < h) {
-            bsum = 0
-            gsum = bsum
-            rsum = gsum
-            boutsum = rsum
-            goutsum = boutsum
-            routsum = goutsum
-            binsum = routsum
-            ginsum = binsum
-            rinsum = ginsum
-            i = -radius
-            while (i <= radius) {
-                p = pix[yi + Math.min(wm, Math.max(i, 0))]
-                sir = stack[i + radius]
-                sir[0] = p and 0xff0000 shr 16
-                sir[1] = p and 0x00ff00 shr 8
-                sir[2] = p and 0x0000ff
-                rbs = r1 - Math.abs(i)
-                rsum += sir[0] * rbs
-                gsum += sir[1] * rbs
-                bsum += sir[2] * rbs
-                if (i > 0) {
-                    rinsum += sir[0]
-                    ginsum += sir[1]
-                    binsum += sir[2]
-                } else {
-                    routsum += sir[0]
-                    goutsum += sir[1]
-                    boutsum += sir[2]
-                }
-                i++
+        val audioSessionId: Int = musicService!!.mediaPlayer!!.audioSessionId
+        try {
+            if (audioSessionId != -1) {
+                audioVisual.setAudioSessionId(audioSessionId)
             }
-            stackpointer = radius
-            x = 0
-            while (x < w) {
-                r[yi] = dv[rsum]
-                g[yi] = dv[gsum]
-                b[yi] = dv[bsum]
-                rsum -= routsum
-                gsum -= goutsum
-                bsum -= boutsum
-                stackstart = stackpointer - radius + div
-                sir = stack[stackstart % div]
-                routsum -= sir[0]
-                goutsum -= sir[1]
-                boutsum -= sir[2]
-                if (y == 0) {
-                    vmin[x] = Math.min(x + radius + 1, wm)
-                }
-                p = pix[yw + vmin[x]]
-                sir[0] = p and 0xff0000 shr 16
-                sir[1] = p and 0x00ff00 shr 8
-                sir[2] = p and 0x0000ff
-                rinsum += sir[0]
-                ginsum += sir[1]
-                binsum += sir[2]
-                rsum += rinsum
-                gsum += ginsum
-                bsum += binsum
-                stackpointer = (stackpointer + 1) % div
-                sir = stack[stackpointer % div]
-                routsum += sir[0]
-                goutsum += sir[1]
-                boutsum += sir[2]
-                rinsum -= sir[0]
-                ginsum -= sir[1]
-                binsum -= sir[2]
-                yi++
-                x++
-            }
-            yw += w
-            y++
+        } catch (e: Exception) {
+            audioVisual = binding.visualizer
         }
-        x = 0
-        while (x < w) {
-            bsum = 0
-            gsum = bsum
-            rsum = gsum
-            boutsum = rsum
-            goutsum = boutsum
-            routsum = goutsum
-            binsum = routsum
-            ginsum = binsum
-            rinsum = ginsum
-            yp = -radius * w
-            i = -radius
-            while (i <= radius) {
-                yi = Math.max(0, yp) + x
-                sir = stack[i + radius]
-                sir[0] = r[yi]
-                sir[1] = g[yi]
-                sir[2] = b[yi]
-                rbs = r1 - Math.abs(i)
-                rsum += r[yi] * rbs
-                gsum += g[yi] * rbs
-                bsum += b[yi] * rbs
-                if (i > 0) {
-                    rinsum += sir[0]
-                    ginsum += sir[1]
-                    binsum += sir[2]
-                } else {
-                    routsum += sir[0]
-                    goutsum += sir[1]
-                    boutsum += sir[2]
-                }
-                if (i < hm) {
-                    yp += w
-                }
-                i++
-            }
-            yi = x
-            stackpointer = radius
-            y = 0
-            while (y < h) {
 
-                // Preserve alpha channel: ( 0xff000000 & pix[yi] )
-                pix[yi] =
-                    -0x1000000 and pix[yi] or (dv[rsum] shl 16) or (dv[gsum] shl 8) or dv[bsum]
-                rsum -= routsum
-                gsum -= goutsum
-                bsum -= boutsum
-                stackstart = stackpointer - radius + div
-                sir = stack[stackstart % div]
-                routsum -= sir[0]
-                goutsum -= sir[1]
-                boutsum -= sir[2]
-                if (x == 0) {
-                    vmin[y] = Math.min(y + r1, hm) * w
-                }
-                p = x + vmin[y]
-                sir[0] = r[p]
-                sir[1] = g[p]
-                sir[2] = b[p]
-                rinsum += sir[0]
-                ginsum += sir[1]
-                binsum += sir[2]
-                rsum += rinsum
-                gsum += ginsum
-                bsum += binsum
-                stackpointer = (stackpointer + 1) % div
-                sir = stack[stackpointer]
-                routsum += sir[0]
-                goutsum += sir[1]
-                boutsum += sir[2]
-                rinsum -= sir[0]
-                ginsum -= sir[1]
-                binsum -= sir[2]
-                yi += w
-                y++
-            }
-            x++
-        }
-        Log.e("pix", w.toString() + " " + h + " " + pix.size)
-        bitmap.setPixels(pix, 0, w, 0, 0, w, h)
-        return bitmap
     }
+
+    private fun pauseMusic() {
+        binding.playPauseBt.setImageResource(R.drawable.ic_play_circle)
+        musicService!!.showNotification(R.drawable.ic_play_circle)
+        isPlaying = false
+        musicService!!.mediaPlayer!!.pause()
+
+        /*if (audioVisual != null)
+            audioVisual.release();*/
+    }
+
+    private fun prevNextMusic(increment: Boolean) {
+        if (increment) {
+            setMusicPosition(increment = true)
+            setLayout()
+            createMediaPlayer()
+
+        } else {
+            setMusicPosition(increment = false)
+            setLayout()
+            createMediaPlayer()
+
+        }
+    }
+
+
+    override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+        val binder = service as MusicService.MyBinder
+        musicService = binder.currentService()
+        createMediaPlayer()
+        musicService!!.showNotification(R.drawable.ic_pause_circle)
+        musicService!!.seekBarSetup()
+    }
+
+    override fun onServiceDisconnected(p0: ComponentName?) {
+        musicService = null
+    }
+
+    override fun onCompletion(p0: MediaPlayer?) {
+        setMusicPosition(increment = true)
+        createMediaPlayer()
+        try {
+            setLayout()
+            if (audioVisual != null)
+                audioVisual.hide();
+        } catch (e: Exception) {
+            return
+        }
+    }
+
 }

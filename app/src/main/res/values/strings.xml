@@ -156,5 +156,14 @@
     <string name="replay">Replay</string>
     <string name="q_remove">Do you want to remove the file from the current playlist?</string>
     <string name="q_delete">Do you want to delete the original file?</string>
+    <string name="timer">Timer</string>
+    <string name="speed_play">Speed play</string>
+    <string name="file_info">File Info</string>
+    <string name="alarm_ringtone">Alarm ringtone</string>
+    <string name="set_as">Set as</string>
+    <string name="phone_ringtone">Phone ringtone</string>
+    <string name="all">All</string>
+    <string name="recently_played">Recently Played</string>
+    <string name="favorite">Favorite</string>
 
 </resources>

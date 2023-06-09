@@ -361,7 +361,6 @@ class VideoFragment : BaseFragment<VideoFragmentBinding>() {
         val binding_sheet = RenameDialogBinding.inflate(LayoutInflater.from(mActivity))
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(binding_sheet.root)
-
         dialog.window!!.apply {
             setLayout(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT

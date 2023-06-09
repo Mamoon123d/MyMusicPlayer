@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/gray_bg"
+        >
+
+        <SeekBar
+            android:id="@+id/progress_bar"
+            android:layout_width="match_parent"
+            android:progressBackgroundTint="@color/white"
+            android:progressTint="@color/text_2"
+            android:splitTrack="true"
+            android:thumbTint="@color/white"
+            android:visibility="gone"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/album_art"
+            android:layout_width="@dimen/qb_px_40"
+            android:layout_height="@dimen/qb_px_40"
+            android:layout_marginHorizontal="@dimen/x20"
+            android:layout_marginVertical="@dimen/x10"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:shapeAppearanceOverlay="@style/circleImageView" />
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/text_con"
+            android:layout_width="@dimen/x0"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/songListBt"
+            app:layout_constraintStart_toEndOf="@+id/album_art"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/tvSongName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="marquee"
+                android:focusable="true"
+                android:lines="1"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:paddingHorizontal="@dimen/x6"
+                android:shadowColor="@color/base_txt_time"
+                android:text="@string/title"
+                android:textColor="@color/text_1"
+                android:textSize="@dimen/sp14"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/share_img"
+                app:layout_constraintStart_toEndOf="@+id/back_img"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tvArtistAndAlbum"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="artist"
+                android:paddingHorizontal="@dimen/x6"
+                android:textColor="@color/text_1"
+                android:textSize="@dimen/sp12"
+                android:lines="1" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/songListBt"
+            android:layout_width="@dimen/x20"
+            android:layout_height="@dimen/x20"
+            android:layout_marginHorizontal="@dimen/x10"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/play_pause_bt"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_songlist" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/play_pause_bt"
+            android:layout_width="@dimen/x20"
+            android:layout_height="@dimen/x20"
+            android:layout_marginHorizontal="@dimen/x10"
+            android:tint="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/view"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/play_icon" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/closeBt"
+            android:layout_width="@dimen/x20"
+            android:layout_height="@dimen/x20"
+            android:padding="@dimen/x2"
+            android:layout_marginHorizontal="@dimen/x20"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_close" />
+
+        <View
+            android:id="@+id/view"
+            android:layout_width="@dimen/x1"
+            android:layout_height="@dimen/x30"
+            android:layout_marginHorizontal="@dimen/x10"
+            android:background="@color/ad_content_light"
+            app:layout_constraintBottom_toBottomOf="@+id/album_art"
+            app:layout_constraintEnd_toStartOf="@+id/closeBt"
+            app:layout_constraintTop_toTopOf="@+id/album_art" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

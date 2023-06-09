@@ -2,14 +2,18 @@ package com.musicplayer.android.model
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.provider.MediaStore
 import androidx.appcompat.app.AppCompatActivity
 import com.musicplayer.android.MainActivity
+import com.musicplayer.android.music.MPlayerActivity
 import com.musicplayer.android.room.database.Db
 import com.musicplayer.android.room.repo.Repository
 import com.musicplayer.android.room.vm.MainViewModel
 import java.io.File
+import java.util.concurrent.TimeUnit
+import kotlin.system.exitProcess
 
 data class MainMusicData(
     val id: String,
@@ -18,7 +22,7 @@ data class MainMusicData(
     val folderName: String,
     val size: String,
     var path: String,
-    var artUri: Uri,
+    var artUri: String,
     var pixels: String,
     var album: String,
     var artist: String,
@@ -103,15 +107,14 @@ fun getAllMusic(context: Context): ArrayList<MainMusicData> {
 
                 try {
                     val file = File(pathC)
-                    val artUriC = Uri.fromFile(file)
+                    //val artUriC = Uri.fromFile(file)
                     //  Log.d("Audio", "Audio path: " + pathC)
-
+                    val uri = Uri.parse("content://media/external/audio/albumart")
+                    val artUriC = Uri.withAppendedPath(uri, albumIdC).toString()
 
                     val Audio = MainMusicData(
                         title = if (titleC.matches(Regex("Unknown"))) titleC else "${
-                            Uri.fromFile(
-                                file
-                            ).lastPathSegment
+                            Uri.fromFile(file).lastPathSegment
                         }",
                         id = idC,
                         folderName = folderC,
@@ -123,9 +126,14 @@ fun getAllMusic(context: Context): ArrayList<MainMusicData> {
                         isFavourite = false,
                         album = albumC,
                         artist = artistC,
-                       albumId = albumIdC
+                        albumId = albumIdC
                     )
-                    if (file.exists()) tempList.add(Audio)
+                    if (file.exists()) {
+                        val albumIdTemp = albumIdC.trim().toLong()
+                        if (albumIdTemp > 0) {
+                            tempList.add(Audio)
+                        }
+                    }
 
                     //for adding folders
                     if (!tempFolderList.contains(folderC) && !folderC.contains("Internal Storage")) {
@@ -146,4 +154,47 @@ fun getAllMusic(context: Context): ArrayList<MainMusicData> {
             } while (cursor.moveToNext())
     cursor?.close()
     return tempList
+}
+
+fun getImageArt(path: String): ByteArray? {
+    val retriever = MediaMetadataRetriever()
+    retriever.setDataSource(path)
+    return retriever.embeddedPicture
+}
+
+public fun setMusicPosition(increment: Boolean) {
+    if (!MPlayerActivity.isRepeat) {
+        if (increment) {
+            if (MPlayerActivity.audioList.size - 1 == MPlayerActivity.songPosition)
+                MPlayerActivity.songPosition = 0
+            else
+                ++MPlayerActivity.songPosition
+        } else {
+            if (0 == MPlayerActivity.songPosition)
+                MPlayerActivity.songPosition = MPlayerActivity.audioList.size - 1
+            else
+                --MPlayerActivity.songPosition
+
+        }
+    }
+}
+
+fun formatDuration(duration: Long): String {
+    val minutes = TimeUnit.MINUTES.convert(duration, TimeUnit.MILLISECONDS)
+    val seconds = (TimeUnit.SECONDS.convert(
+        duration,
+        TimeUnit.MILLISECONDS
+    ) - minutes * TimeUnit.SECONDS.convert(1, TimeUnit.MINUTES))
+    return String.format("%02d:%02d", minutes, seconds)
+}
+
+fun exitApplication() {
+    if (MPlayerActivity.musicService != null) {
+        MPlayerActivity.musicService!!.stopForeground(true)
+        MPlayerActivity.musicService!!.mediaPlayer!!.release()
+        MPlayerActivity.musicService = null
+        exitProcess(1)
+
+
+    }
 }
