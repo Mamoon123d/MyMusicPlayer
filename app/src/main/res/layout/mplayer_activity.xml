@@ -14,7 +14,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="fitXY"
-            android:visibility="gone" />
+            android:alpha="0.5"
+            android:visibility="visible" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayout"
@@ -92,6 +93,7 @@
                 android:id="@+id/album_art_con"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:elevation="2dp"
                 android:layout_marginTop="@dimen/x100"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -113,7 +115,7 @@
                     android:id="@+id/album_cover"
                     android:layout_width="@dimen/qb_px_160"
                     android:layout_height="@dimen/qb_px_160"
-                    android:elevation="1dp"
+                    android:padding="5dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

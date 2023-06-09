@@ -4,15 +4,31 @@ import android.graphics.Bitmap
 import androidx.palette.graphics.Palette
 
 class MyColor {
-    companion object {
-       final val RGB: String = "rgb"
-       final val VIBRANT: String = "vibrant"
-       final val VIBRANT_DARK: String = "vibrantDark"
-       final val VIBRANT_LIGHT: String = "vibrantLight"
-       final val MUTED: String = "muted"
-       final val MUTED_DARK: String = "mutedDark"
-       final val MUTED_LIGHT: String = "mutedLight"
+    var bitmap:Bitmap?=null
+    constructor(bitmap: Bitmap){
+        this.bitmap=bitmap
+    }
+    var RGB_COLOR: Int = 0
+    var VIBRANT_COLOR: Int = 0
+    var VIBRANT_Dark_COLOR: Int = 0
+    var VIBRANT_Light_COLOR: Int = 0
 
+    init {
+        if (bitmap!=null){
+           val map= bitmap!!.generateColor()
+            VIBRANT_COLOR=map[VIBRANT]!!
+        }
+    }
+    companion object {
+        final val RGB: String = "rgb"
+       final val VIBRANT: String = "vibrant"
+        final val VIBRANT_DARK: String = "vibrantDark"
+        final val VIBRANT_LIGHT: String = "vibrantLight"
+        final val MUTED: String = "muted"
+        final val MUTED_DARK: String = "mutedDark"
+        final val MUTED_LIGHT: String = "mutedLight"
+
+     
         fun Bitmap.generateColor(): Map<String, Int> {
             var colorMap = mapOf<String, Int>()
             Palette.from(this).generate { palette ->
