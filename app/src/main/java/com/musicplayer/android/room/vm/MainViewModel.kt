@@ -76,6 +76,35 @@ class MainViewModel(private val repo: Repository) : ViewModel() {
         return repo.totalFavorite()
     }
 
+
+    //============ Video History ==============================
+    fun getVideosInHistory(): LiveData<List<VideoHistoryData>>{
+        return repo.getVideosInHistory()
+    }
+
+     fun addVideoInHistory(data: VideoHistoryData){
+        viewModelScope.launch(Dispatchers.IO) {
+            repo.addVideoInHistory(data)
+        }
+    }
+
+    fun removeVideoInHistory(data: VideoHistoryData){
+        viewModelScope.launch(Dispatchers.IO) {
+            repo.removeVideoInHistory(data)
+        }
+    }
+
+     fun updateVideoInHistory(data: VideoHistoryData){
+        viewModelScope.launch(Dispatchers.IO) {
+            repo.updateVideoInHistory(data)
+        }
+    }
+
+
+    fun isHistoryExists(videoId: String): LiveData<Int>{
+        return repo.isHistoryExists(videoId)
+    }
+
     //================== music favorite ================
 
     fun getMusicFavorites(): LiveData<List<MusicFavoriteData>> {
@@ -129,20 +158,48 @@ class MainViewModel(private val repo: Repository) : ViewModel() {
     }
 
     //=============== Music item in playlist ================
-    fun getMusicsInPl(plId: Int): LiveData<List<MusicItemPlData>>{
+    fun getMusicsInPl(plId: Int): LiveData<List<MusicItemPlData>> {
         return repo.getMusicsInPl(plId)
     }
 
-     fun addMusicInPl(data: MusicItemPlData){
+    fun addMusicInPl(data: MusicItemPlData) {
         viewModelScope.launch(Dispatchers.IO) {
-             repo.addMusicInPl(data)
+            repo.addMusicInPl(data)
         }
     }
 
-     fun removeMusicInPl(data: MusicItemPlData){
-         viewModelScope.launch(Dispatchers.IO) {
-             repo.removeMusicInPl(data)
-         }
+    fun removeMusicInPl(data: MusicItemPlData) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repo.removeMusicInPl(data)
+        }
     }
+
+    //==================== recent music =======================
+    fun recentMusics(): LiveData<List<RecentMusicItemData>> {
+        return repo.recentMusics()
+    }
+
+    fun addRecentMusic(data: RecentMusicItemData) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repo.addRecentMusic(data)
+        }
+    }
+
+    fun removeRecentMusic(data: RecentMusicItemData) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repo.removeRecentMusic(data)
+        }
+    }
+
+    fun updateRecentMusic(data: RecentMusicItemData) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repo.updateMRecentMusic(data)
+        }
+    }
+
+    fun isRecentMusicExists(musicId: String): LiveData<Int> {
+        return repo.isRecentMusicExists(musicId)
+    }
+
 
 }

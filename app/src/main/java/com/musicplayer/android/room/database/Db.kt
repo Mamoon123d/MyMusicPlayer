@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import com.musicplayer.android.room.data.*
 
 @Database(
-    entities = [PlayListData::class, VideoItemPlData::class, FavoriteData::class, MusicFavoriteData::class,MusicPlayListData::class,MusicItemPlData::class],
+    entities = [PlayListData::class, VideoItemPlData::class, FavoriteData::class, VideoHistoryData::class, MusicFavoriteData::class, MusicPlayListData::class, MusicItemPlData::class, RecentMusicItemData::class],
     version = 1,
     exportSchema = false
 )

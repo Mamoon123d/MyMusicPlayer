@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#E6E6E6">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/tb"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/qb_px_55"
+            android:background="@color/first_color"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/back_img"
+                android:layout_width="@dimen/qb_px_40"
+                android:layout_height="match_parent"
+                android:padding="@dimen/x6"
+                android:tint="@color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/back_icon" />
+
+            <TextView
+                android:id="@+id/title_tv"
+                android:layout_width="@dimen/x0"
+                android:layout_height="wrap_content"
+                android:lines="1"
+                android:paddingHorizontal="@dimen/x4"
+                android:text="Redeem"
+                android:textColor="@color/text_1"
+                android:textSize="@dimen/sp18"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/coin_iv"
+                app:layout_constraintStart_toEndOf="@+id/back_img"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/coin_iv"
+                android:layout_width="@dimen/x20"
+                android:layout_height="@dimen/x20"
+                app:layout_constraintBottom_toBottomOf="@+id/coin_tv"
+                app:layout_constraintEnd_toStartOf="@+id/coin_tv"
+                app:layout_constraintTop_toTopOf="@+id/coin_tv"
+                app:srcCompat="@drawable/coin" />
+
+            <TextView
+                android:id="@+id/coin_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="230"
+                android:textColor="@color/text_1"
+                android:paddingHorizontal="@dimen/x4"
+                android:layout_marginEnd="@dimen/x4"
+                android:textSize="@dimen/sp16"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/x0"
+            android:padding="@dimen/qb_px_10"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tb">
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_offer_item"
+                android:orientation="vertical"
+                android:padding="@dimen/qb_px_10">
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/reward_iv"
+                    android:layout_width="@dimen/qb_px_100"
+                    android:layout_height="@dimen/qb_px_100"
+                    android:layout_gravity="center_horizontal"
+                    app:shapeAppearanceOverlay="@style/roundFrame"
+                    app:srcCompat="@drawable/coin" />
+
+                <TextView
+                    android:id="@+id/reward_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/qb_px_20"
+                    android:text="@string/title"
+                    android:textColor="@color/text_3"
+                    android:textSize="@dimen/sp20" />
+
+                <TextView
+                    android:id="@+id/pay_value_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/qb_px_10"
+                    android:text="@string/title"
+                    android:textSize="@dimen/sp16"
+                    android:textStyle="bold" />
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/pay_chips"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    app:flow_horizontalAlign="center"
+                    app:flow_verticalAlign="center"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/pay_value"
+                    app:singleSelection="true" />
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/rs_player_et"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/x20"
+                    android:background="@drawable/bg_edit_text"
+                    android:drawableStart="@drawable/ic_game"
+                    android:drawablePadding="@dimen/x6"
+                    android:drawableTint="@color/text_3"
+                    android:hint="@string/player_id"
+                    android:inputType="text"
+                    android:lines="1"
+                    android:padding="@dimen/x10"
+                    android:textColor="@color/text_3"
+                    android:textColorHint="@color/text_4"
+                    android:textSize="@dimen/sp18" />
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/rs_phone_et"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/x20"
+                    android:background="@drawable/bg_edit_text"
+                    android:drawableStart="@drawable/ic_phone"
+                    android:drawablePadding="@dimen/x6"
+                    android:drawableTint="@color/text_3"
+                    android:hint="Phone"
+                    android:inputType="phone"
+                    android:lines="1"
+                    android:maxLength="10"
+                    android:padding="@dimen/x10"
+                    android:textColor="@color/text_4"
+                    android:textColorHint="@color/text_4"
+                    android:textSize="@dimen/sp18" />
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/rs_email_et"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/x20"
+                    android:background="@drawable/bg_edit_text"
+                    android:drawableStart="@drawable/ic_email"
+                    android:drawablePadding="@dimen/x6"
+                    android:drawableTint="@color/text_3"
+                    android:hint="@string/email"
+                    android:inputType="text"
+                    android:lines="1"
+                    android:padding="@dimen/x10"
+                    android:textColor="@color/text_3"
+                    android:textColorHint="@color/text_4"
+                    android:textSize="@dimen/sp18" />
+
+                <TextView
+                    android:id="@+id/bt_redeem"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/x10"
+                    android:background="@drawable/bg_solid_btn"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:paddingVertical="@dimen/x10"
+                    android:text="Redeem Now"
+                    android:textAlignment="center"
+                    android:textAllCaps="true"
+                    android:textColor="@color/text_1"
+                    android:textSize="@dimen/sp16"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+                <TextView
+                    android:id="@+id/re_inst2_tv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/x20"
+                    android:paddingVertical="@dimen/x10"
+                    android:text="@string/sd_inst"
+                    android:textColor="@color/text_5"
+                    android:textSize="@dimen/sp14"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/rewardSubmit_bt" />
+
+                <TextView
+                    android:id="@+id/re_inst3_tv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:paddingVertical="@dimen/x10"
+                    android:text="@string/inst3"
+                    android:textColor="@color/text_5"
+                    android:textSize="@dimen/sp14"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/rewardSubmit_bt" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/tc_1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="*You can check our "
+                        android:textColor="@color/text_5"
+                        android:textSize="@dimen/sp14"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/tc_2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/privacy_policy_"
+                        android:textColor="#3F51B5"
+                        android:textSize="@dimen/sp14"
+                        app:layout_constraintStart_toEndOf="@id/tc_1"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/tc_3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=" and "
+                        android:textColor="@color/text_5"
+                        android:textSize="@dimen/sp14"
+                        app:layout_constraintStart_toEndOf="@+id/tc_2"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/tc_4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/terms_of_service"
+                        android:textColor="#3F51B5"
+                        android:textSize="@dimen/sp14"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tc_1" />
+
+                    <TextView
+                        android:id="@+id/tc_5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=" for more infomation."
+                        android:textColor="@color/text_5"
+                        android:textSize="@dimen/sp14"
+                        app:layout_constraintStart_toEndOf="@+id/tc_4"
+                        app:layout_constraintTop_toBottomOf="@id/tc_2" />
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+        </androidx.core.widget.NestedScrollView>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+    </data>
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/gameChip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/x6"
+        android:lines="1"
+        android:padding="@dimen/x4"
+        android:text="racing"
+        android:textColor="@color/text_3"
+        app:chipMinHeight="@dimen/qb_px_40"
+        android:textSize="14sp"
+        android:textStyle="normal"
+        app:chipIcon="@drawable/ic_list_more"
+        app:chipIconTint="@color/text_3"
+        app:iconStartPadding="@dimen/x6">
+
+    </com.google.android.material.chip.Chip>
+</layout>

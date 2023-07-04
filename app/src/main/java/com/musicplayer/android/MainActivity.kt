@@ -1,20 +1,32 @@
 package com.musicplayer.android
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
 import android.provider.Settings
+import android.util.Log
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.OnLifecycleEvent
+import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import com.applovin.mediation.MaxAd
+import com.applovin.mediation.MaxAdListener
+import com.applovin.mediation.MaxError
+import com.applovin.mediation.ads.MaxAppOpenAd
+import com.applovin.sdk.AppLovinSdk
 import com.musicplayer.android.base.BaseActivity
 import com.musicplayer.android.databinding.ActivityMainBinding
 import com.musicplayer.android.model.*
 import com.musicplayer.android.music.MPlayerActivity
+import com.musicplayer.android.utils.AdKey
 import com.musicplayer.android.utils.view.MyCustomDialog
 import com.musicplayer.android.utils.view.MyCustomDialog.Companion.STYLE_1
 
@@ -25,8 +37,11 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         lateinit var videoList: ArrayList<VideoMainData>
         lateinit var audioList: ArrayList<MainMusicData>
         lateinit var audioFolders: ArrayList<MusicFolder>
+        lateinit var musicAlbumList: ArrayList<MusicAlbumData>
+        lateinit var musicArtistList: ArrayList<MusicArtistData>
         var sortValue: Int = 0
         var sortOrder: Int = 0
+        private val al_tag = "AppLovin:"
 
         val sortList = arrayOf(
             MediaStore.Video.Media.DATE_ADDED + " DESC",
@@ -55,23 +70,32 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
                 Environment.isExternalStorageManager()
             } else {
                 TODO("VERSION.SDK_INT < R")
+
             }
         ) {
             //    showMsg("granted")
             // Permission granted. Now resume your workflow.
             folderList = ArrayList()
-            audioFolders= ArrayList()
+            audioFolders = ArrayList()
             videoList = getAllVideos(mActivity)
-            audioList= getAllMusic(mActivity)
+            audioList = getAllMusic(mActivity)
+            musicAlbumList = getAlbumList(mActivity)
+            musicArtistList = getArtistList(mActivity)
         } else {
             folderList = ArrayList()
             videoList = ArrayList()
-            audioList= ArrayList()
-            audioFolders=ArrayList()
+            audioList = ArrayList()
+            audioFolders = ArrayList()
+            musicAlbumList = ArrayList()
+            musicArtistList = ArrayList()
             showAllMediaDialog()
         }
     }
 
+    fun updateAlbumList(){
+        musicAlbumList = ArrayList()
+        musicAlbumList = getAlbumList(mActivity)
+    }
     override fun setLayoutId(): Int {
         return R.layout.activity_main
     }
@@ -106,6 +130,8 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
                             }
                         ) {
                             dismiss()
+                            updateUi()
+                            //showMsg("granted")
                             // Permission granted. Now resume your workflow.
                         }
                     }
@@ -116,6 +142,16 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
             })
         }
         dialog.show()
+    }
+
+    private fun updateUi() {
+
+        folderList = ArrayList()
+        audioFolders = ArrayList()
+        videoList = getAllVideos(mActivity)
+        audioList = getAllMusic(mActivity)
+        musicAlbumList = getAlbumList(mActivity)
+        musicArtistList = getArtistList(mActivity)
     }
 
     // Initialize the variable in before activity creation is complete.
@@ -130,7 +166,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
                 }
             ) {
                 showMsg("granted")
-
                 // Permission granted. Now resume your workflow.
             }
         })
@@ -141,7 +176,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
             supportFragmentManager.findFragmentById(R.id.container) as NavHostFragment
         val navController = navHostFragment.navController
         // setupWithNavController(bn, navController)
-        binding.bottomNav.setupWithNavController(navController)
+        bn.setupWithNavController(navController)
     }
 
     /*private fun setVp() {
@@ -257,4 +292,58 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
             exitApplication()
         }
     }
+
+    class MyAppOpenManager(applicationContext: Context?) : LifecycleObserver, MaxAdListener {
+        private var appOpenAd: MaxAppOpenAd? = null
+        private lateinit var context: Context
+
+        init {
+            ProcessLifecycleOwner.get().lifecycle.addObserver(this)
+            context = applicationContext!!
+            appOpenAd = MaxAppOpenAd(AdKey.appOpenAdUnitId, context)
+            appOpenAd!!.setListener(this)
+            appOpenAd!!.loadAd()
+        }
+
+        private fun showAdIfReady() {
+            if (appOpenAd == null || !AppLovinSdk.getInstance(context).isInitialized) return
+
+            if (appOpenAd!!.isReady) {
+                //  Toast.makeText(context, "isReady=true", Toast.LENGTH_SHORT).show()
+                appOpenAd!!.showAd(AdKey.appOpenAdUnitId)
+            } else {
+                appOpenAd!!.loadAd()
+            }
+
+        }
+
+        @OnLifecycleEvent(Lifecycle.Event.ON_START)
+        fun onStart() {
+            showAdIfReady()
+        }
+
+        override fun onAdLoaded(ad: MaxAd) {
+            Log.d(al_tag, "onAdLoaded: " + ad)
+        }
+
+        override fun onAdLoadFailed(adUnitId: String, error: MaxError) {
+            Log.d(al_tag, "onAdLoadFailed: " + error + "  adUnitId:${adUnitId}")
+        }
+
+        override fun onAdDisplayed(ad: MaxAd) {
+            Log.d(al_tag, "onAdDisplay :" + ad)
+        }
+
+        override fun onAdClicked(ad: MaxAd) {
+        }
+
+        override fun onAdHidden(ad: MaxAd) {
+            appOpenAd!!.loadAd()
+        }
+
+        override fun onAdDisplayFailed(ad: MaxAd, error: MaxError) {
+            appOpenAd!!.loadAd()
+        }
+    }
+
 }

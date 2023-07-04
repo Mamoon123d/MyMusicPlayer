@@ -25,7 +25,6 @@ import com.musicplayer.android.base.BaseRvAdapter
 import com.musicplayer.android.base.BaseRvAdapter2
 import com.musicplayer.android.databinding.*
 import com.musicplayer.android.model.OptionSheetData
-import com.musicplayer.android.model.VideoContentData
 import com.musicplayer.android.model.VideoMainData
 import com.musicplayer.android.room.data.FavoriteData
 import com.musicplayer.android.room.data.PlayListData
@@ -34,6 +33,7 @@ import com.musicplayer.android.room.database.Db
 import com.musicplayer.android.room.factory.MainMvFactory
 import com.musicplayer.android.room.repo.Repository
 import com.musicplayer.android.room.vm.MainViewModel
+import com.musicplayer.android.utils.MoreVideoBS
 import com.musicplayer.android.utils.MyIntent
 import com.musicplayer.android.utils.SendTo
 import java.io.File
@@ -47,10 +47,9 @@ class VideoFragment : BaseFragment<VideoFragmentBinding>() {
     }
 
     companion object {
-        var videoList: ArrayList<VideoContentData>? = null
+      lateinit var videoList: ArrayList<VideoMainData>
         //   var folderList: ArrayList<VideoFolderData>? = null
     }
-
 
     override fun initM() {
         setVideoList()
@@ -64,21 +63,46 @@ class VideoFragment : BaseFragment<VideoFragmentBinding>() {
                 TODO("VERSION.SDK_INT < R")
             }
         ) {
-            Log.d("TAG", "onViewCreated: $videoList")
-            vidAdapter =
-                VideoAdapter(mActivity, MainActivity.videoList, lifecycleOwner = this).apply {
-                    setOnItemClickListener(object : BaseRvAdapter2.OnItemClickListener {
-                        override fun onItemClick(v: View?, position: Int) {
-                            MyIntent.goIntent(mActivity, position, "VideoFragment")
-                        }
-                    })
-                    setOnMoreOptionClickListenerX(object : VideoAdapter.OnMoreOptionClickListener {
-                        override fun onMoreOptionClick(data: VideoMainData, position: Int) {
-                            showMoreOptions(data, position)
-                        }
+            // Log.d("TAG", "onViewCreated: $videoList")
 
-                    })
-                }
+            videoList = ArrayList()
+            videoList.addAll(MainActivity.videoList)
+
+            /* videoList.forEachIndexed { index, it ->
+
+                 if (videoList.size-1 > index) {
+                     val inputDate=formatVideoDate(File(it.path).lastModified())
+                     val date1=SimpleDateFormat("dd/MM/yyyy").parse(inputDate)
+                     val date2=SimpleDateFormat("dd/MM/yyyy").parse(formatVideoDate(File(videoList[index+1].path).lastModified()))
+                     //date check
+
+                     if (date1.compareTo(date2) == 0) {
+                        it.type=DATE_TYPE
+                         //  0 comes when two date are same,
+                         //  1 comes when date1 is higher then date2
+                         // -1 comes when date1 is lower then date2
+
+
+                     }
+                 }
+
+             }*/
+
+            vidAdapter = VideoAdapter(mActivity, videoList, lifecycleOwner = this).apply {
+                setOnItemClickListener(object : BaseRvAdapter2.OnItemClickListener {
+                    override fun onItemClick(v: View?, position: Int) {
+                        MyIntent.goIntent(mActivity, position, "VideoFragment")
+                    }
+                })
+                setOnMoreOptionClickListenerX(object : VideoAdapter.OnMoreOptionClickListener {
+                    override fun onMoreOptionClick(data: VideoMainData, position: Int) {
+                       // showMoreOptions(data, position)
+                        MoreVideoBS(mActivity,data,position,this@apply)
+
+                    }
+
+                })
+            }
             binding.videoRv.apply {
                 adapter = vidAdapter
                 layoutManager = LinearLayoutManager(mActivity)
@@ -126,6 +150,7 @@ class VideoFragment : BaseFragment<VideoFragmentBinding>() {
                             3 -> info(data)
                             4 -> mutePlay(vPos)
                             5 -> shareFile(data.path)
+
                         }
                         bs.dismiss()
                     }

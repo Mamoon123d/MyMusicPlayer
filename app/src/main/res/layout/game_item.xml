@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/x100"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/x10"
+    android:layout_marginStart="@dimen/x10"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/ivGame"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/x100"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.MediumComponent"
+        app:srcCompat="@drawable/all_img" />
+
+    <TextView
+        android:id="@+id/tvGameName"
+        android:layout_width="@dimen/x0"
+        android:layout_height="wrap_content"
+        android:text="game name"
+        android:textColor="@color/text_3"
+        android:lines="1"
+        android:textSize="@dimen/sp12"
+        android:layout_marginTop="@dimen/x4"
+        android:ellipsize="end"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ivGame" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -232,27 +232,30 @@
   <androidx.recyclerview.widget.RecyclerView
       android:id = "@+id/rvMe"
       android:layout_width = "match_parent"
-      android:layout_height = "wrap_content"
-      android:nestedScrollingEnabled = "false"
+      android:layout_height="wrap_content"
+      android:nestedScrollingEnabled="false"
       android:layout_marginTop="@dimen/dimen_10x"
-      app:layoutManager = "androidx.recyclerview.widget.GridLayoutManager"
-      app:spanCount = "3"
-      tools:listitem = "@layout/item_category"
-      />
-    <include
-        android:id="@+id/advertisement"
-        layout = "@layout/item_drawer_no_ad" />
-        <RelativeLayout
-            android:layout_width = "match_parent"
-            android:layout_height = "wrap_content"
-            >
-            <ImageView
-                android:id = "@+id/ivSetting"
-                android:layout_width = "25dp"
-                android:layout_height = "25dp"
-                android:layout_marginStart = "10dp"
-                android:layout_marginTop = "10dp"
-                android:layout_marginEnd = "10dp"
+      app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+      app:spanCount="3"
+      tools:listitem="@layout/item_category" />
+
+            <include
+                android:id="@+id/advertisement"
+                layout="@layout/item_drawer_no_ad" />
+
+
+            <RelativeLayout
+                android:id="@+id/settings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/ivSetting"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
                 android:layout_marginBottom = "10dp"
                 android:src = "@drawable/setting" />
             <TextView

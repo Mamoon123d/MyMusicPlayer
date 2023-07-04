@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "pl_music")
+@Entity(tableName = "recent_music")
 data class RecentMusicItemData(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id") val id: Long? = null,
@@ -20,6 +20,7 @@ data class RecentMusicItemData(
     @ColumnInfo(name = "album") val album: String,
     @ColumnInfo(name = "artist") val artist: String,
     @ColumnInfo(name = "albumId") val albumId: String? = null,
+    @ColumnInfo(name = "time") val recentTime: String,
     @ColumnInfo(name = "isFavourite") var isFavourite: Boolean? = false,
 ) {
 

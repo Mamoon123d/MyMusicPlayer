@@ -41,4 +41,5 @@ class MusicFragment : BaseFragment<FragmentMusicBinding>() {
     override fun setLayoutId(): Int {
         return R.layout.fragment_music
     }
+
 }

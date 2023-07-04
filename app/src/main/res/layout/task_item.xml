@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/x10"
+        android:layout_marginTop="@dimen/x10"
+        android:background="@drawable/bg_offer_item"
+        android:padding="@dimen/x10">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivOffer"
+            android:layout_width="@dimen/qb_px_70"
+            android:layout_height="@dimen/qb_px_70"
+            android:scaleType="centerCrop"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:id="@+id/mid_line"
+            android:layout_width="@dimen/qb_px_2"
+            android:layout_height="@dimen/x0"
+            android:layout_marginHorizontal="@dimen/x20"
+            android:layout_marginVertical="@dimen/x8"
+            android:background="@color/baseTitleSub"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/ivOffer"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="@dimen/x0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/x10"
+            android:paddingHorizontal="@dimen/qb_px_8"
+            android:text="@string/title"
+            android:textColor="@color/text_3"
+            android:textSize="@dimen/sp18"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/mid_line"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvSubtitle"
+            android:layout_width="@dimen/x0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/x10"
+            android:layout_marginEnd="@dimen/x20"
+            android:paddingHorizontal="@dimen/qb_px_8"
+            android:text="@string/title"
+            android:textColor="@color/text_3"
+            android:textSize="@dimen/sp14"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/mid_line"
+            app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

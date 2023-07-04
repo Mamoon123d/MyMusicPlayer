@@ -40,7 +40,12 @@ class Repository(private val dao: MyDao) {
     suspend fun deleteVideoPl(data: VideoItemPlData) {
         return dao.deleteVideoPl(data)
     }
-    //---------------Favorite----------------------
+
+
+
+
+    //--------------- video Favorite----------------------
+
 
     fun getFavorites(): LiveData<List<FavoriteData>> {
         return dao.getFavList()
@@ -60,6 +65,30 @@ class Repository(private val dao: MyDao) {
      fun totalFavorite():LiveData<Long> {
         return dao.totalFavorites()
     }
+
+
+    //============ Video History ==============================
+    fun getVideosInHistory(): LiveData<List<VideoHistoryData>>{
+        return dao.getVideosInHistory()
+    }
+
+    suspend fun addVideoInHistory(data: VideoHistoryData){
+        return dao.addVideoInHistory(data)
+    }
+
+    suspend fun removeVideoInHistory(data: VideoHistoryData){
+        return dao.removeVideoInHistory(data)
+    }
+
+    suspend fun updateVideoInHistory(data: VideoHistoryData){
+        return dao.updateVideoInHistory(data)
+    }
+
+
+    fun isHistoryExists(id: String): LiveData<Int>{
+        return dao.isHistoryExists(id)
+    }
+
 
     //-------------------music favorite----------------------
 
@@ -107,11 +136,33 @@ class Repository(private val dao: MyDao) {
         return dao.getMusicsInPl(plId)
     }
 
-    suspend fun addMusicInPl(data: MusicItemPlData){
+    suspend fun addMusicInPl(data: MusicItemPlData) {
         return dao.addMusicInPl(data)
     }
 
-    suspend fun removeMusicInPl(data: MusicItemPlData){
+    suspend fun removeMusicInPl(data: MusicItemPlData) {
         return dao.removeMusicInPl(data)
     }
+
+    //==================== recent music =======================
+    fun recentMusics(): LiveData<List<RecentMusicItemData>> {
+        return dao.recentMusics()
+    }
+
+    suspend fun addRecentMusic(data: RecentMusicItemData) {
+        return dao.addRecentMusic(data)
+    }
+
+    suspend fun removeRecentMusic(data: RecentMusicItemData) {
+        return dao.removeRecentMusic(data)
+    }
+
+    suspend fun updateMRecentMusic(data: RecentMusicItemData) {
+        return dao.updateMRecentMusic(data)
+    }
+
+    fun isRecentMusicExists(musicId:String) :LiveData<Int>{
+        return dao.isRecentMusicExists(musicId)
+    }
+
 }

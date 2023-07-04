@@ -26,12 +26,12 @@
     </fragment>
     <fragment
         android:id="@+id/discover"
-        android:name="com.musicplayer.android.discover.DiscoverFragment"
+        android:name="com.musicplayer.android.game.GameFrag"
         android:label="Video"
-        tools:layout="@layout/video_dash_frag" >
+        tools:layout="@layout/game_frag" >
         <action
-        android:id = "@+id/action_discover_to_me"
-        app:destination = "@id/me" />
+            android:id="@+id/action_discover_to_offerFrag"
+            app:destination="@id/offer" />
     </fragment>
     <fragment
         android:id="@+id/me"
@@ -39,7 +39,15 @@
         android:label="Me"
         tools:layout="@layout/fragment_me" >
         <action
-        android:id = "@+id/action_me_to_video"
-        app:destination = "@id/video" />
+            android:id="@+id/action_me_to_video"
+            app:destination="@id/video" />
+    </fragment>
+    <fragment
+        android:id="@+id/offer"
+        android:name="com.musicplayer.android.offer.OfferFrag"
+        android:label="Offer" >
+        <action
+            android:id="@+id/action_offerFrag_to_me"
+            app:destination="@id/me" />
     </fragment>
 </navigation>

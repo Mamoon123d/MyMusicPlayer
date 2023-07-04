@@ -5,13 +5,12 @@ import android.content.Context
 import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.provider.MediaStore
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.musicplayer.android.MainActivity
 import com.musicplayer.android.music.MPlayerActivity
-import com.musicplayer.android.room.database.Db
-import com.musicplayer.android.room.repo.Repository
-import com.musicplayer.android.room.vm.MainViewModel
 import java.io.File
+import java.text.DateFormat
 import java.util.concurrent.TimeUnit
 import kotlin.system.exitProcess
 
@@ -27,10 +26,14 @@ data class MainMusicData(
     var album: String,
     var artist: String,
     var albumId: String,
+    var artistId: String,
+    //  var folderId: String,
     var isFavourite: Boolean? = false
 )
 
-data class MusicFolder(val id: String, val folderName: String, var numberVideos: Int = 0)
+data class MusicFolder(
+    val id: String, val folderName: String, val folderPath: String, var numberVideos: Int = 0
+)
 
 
 @SuppressLint("InlinedApi", "Recycle", "Range")
@@ -42,9 +45,9 @@ fun getAllMusic(context: Context): ArrayList<MainMusicData> {
     MainActivity.audioFolders = ArrayList()
 
 
-    val dao = Db.getDatabase(context).myDao()
-    val repository = Repository(dao)
-    val mainVm = MainViewModel(repository)
+    //val dao = Db.getDatabase(context).myDao()
+    //val repository = Repository(dao)
+    //val mainVm = MainViewModel(repository)
 
     val tempList = ArrayList<MainMusicData>()
     val tempFolderList = ArrayList<String>()
@@ -60,9 +63,13 @@ fun getAllMusic(context: Context): ArrayList<MainMusicData> {
         MediaStore.Audio.Media.RESOLUTION,
         MediaStore.Audio.Media.ALBUM,
         MediaStore.Audio.Media.ARTIST,
+        MediaStore.Audio.Media.ARTIST_ID,
         MediaStore.Audio.Media.ALBUM_ID,
 
-    )
+
+        MediaStore.Audio.Media.COMPOSER,
+
+        )
     val cursor = context.contentResolver.query(
         MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, null, null,
         MainActivity.sortList[MainActivity.sortValue]
@@ -102,8 +109,15 @@ fun getAllMusic(context: Context): ArrayList<MainMusicData> {
                 val artistC = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST))
                     ?: "Unknown"
 
-               val albumIdC = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID)) ?: "0"
+                val albumIdC =
+                    cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID)) ?: "0"
 
+                val artistIdC =
+                    cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST_ID)) ?: "0"
+
+                val composerC =
+                    cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.COMPOSER)) ?: null
+                Log.d("getAllMusic", "getAllMusic: " + composerC)
 
                 try {
                     val file = File(pathC)
@@ -126,11 +140,13 @@ fun getAllMusic(context: Context): ArrayList<MainMusicData> {
                         isFavourite = false,
                         album = albumC,
                         artist = artistC,
-                        albumId = albumIdC
+                        albumId = albumIdC,
+                        artistId = artistIdC,
+                        //  folderId = folderIdC
                     )
                     if (file.exists()) {
-                        val albumIdTemp = albumIdC.trim().toLong()
-                        if (albumIdTemp > 0) {
+                        //val albumIdTemp = albumIdC.trim().toLong()
+                        if (composerC != null) {
                             tempList.add(Audio)
                         }
                     }
@@ -138,12 +154,14 @@ fun getAllMusic(context: Context): ArrayList<MainMusicData> {
                     //for adding folders
                     if (!tempFolderList.contains(folderC) && !folderC.contains("Internal Storage")) {
                         tempFolderList.add(folderC)
-                        MainActivity.audioFolders.add(
-                            MusicFolder(
-                                id = folderIdC,
-                                folderName = folderC
+                        val folderPath = file.parent
+                        if (composerC != null) {
+                            MainActivity.audioFolders.add(
+                                MusicFolder(
+                                    id = folderIdC, folderName = folderC, folderPath = folderPath
+                                )
                             )
-                        )
+                        }
 
                     }
 
@@ -152,6 +170,104 @@ fun getAllMusic(context: Context): ArrayList<MainMusicData> {
                     e.printStackTrace()
                 }
             } while (cursor.moveToNext())
+    cursor?.close()
+    return tempList
+}
+
+@SuppressLint("InlinedApi", "Recycle", "Range")
+fun getAlbumList(context: Context): ArrayList<MusicAlbumData> {
+    val projection = arrayOf(
+        MediaStore.Audio.Albums.ALBUM_ID,
+        MediaStore.Audio.Albums.ALBUM,
+        MediaStore.Audio.Albums.NUMBER_OF_SONGS,
+        MediaStore.Audio.Albums.ARTIST,
+    )
+    val tempList = ArrayList<MusicAlbumData>()
+
+    val cursor = context.contentResolver.query(
+        MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, projection, null, null, null
+
+    )
+    if (cursor != null) {
+        if (cursor.moveToNext()) do {
+            //checking null safety with ?: operator
+            //just add null checking in end, this 0L is alternative value if below function returns a null value
+            // val albumIdC = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ID)) ?: "0"
+            val albumIdC =
+                cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ID)) ?: "0"
+            val albumC =
+                cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM)) ?: "Unknown"
+            val noOFSongsC =
+                cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.NUMBER_OF_SONGS))
+                    ?: "0"
+            val artistC =
+                cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ARTIST)) ?: null
+
+            //val albumArtC = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART)) ?: "Unknown"
+            val uri = Uri.parse("content://media/external/audio/albumart")
+            val artUriC = Uri.withAppendedPath(uri, albumIdC).toString()
+
+            try {
+                if (artistC != null) {
+                    tempList.add(
+                        MusicAlbumData(
+                            albumId = albumIdC,
+                            albumName = albumC,
+                            artUri = artUriC,
+                            totalTrack = noOFSongsC
+                        )
+                    )
+                }
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        } while (cursor.moveToNext())
+    }
+    cursor?.close()
+    return tempList
+}
+
+@SuppressLint("InlinedApi", "Recycle", "Range")
+fun getArtistList(context: Context): ArrayList<MusicArtistData> {
+    val projection = arrayOf(
+        MediaStore.Audio.Artists._ID,
+        MediaStore.Audio.Artists.ARTIST,
+        MediaStore.Audio.Artists.NUMBER_OF_TRACKS,
+
+
+        )
+    val tempList = ArrayList<MusicArtistData>()
+
+    val cursor = context.contentResolver.query(
+        MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI, projection, null, null, null
+
+    )
+    if (cursor != null) {
+        if (cursor.moveToNext()) do {
+            //checking null safety with ?: operator
+            //just add null checking in end, this 0L is alternative value if below function returns a null value
+            // val albumIdC = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ID)) ?: "0"
+            val artistIdC =
+                cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Artists._ID)) ?: "0"
+            val artistC = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Artists.ARTIST))
+                ?: "Unknown"
+            val noOFSongsC =
+                cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Artists.NUMBER_OF_TRACKS))
+                    ?: "0"
+
+            try {
+                tempList.add(
+                    MusicArtistData(
+                        artistId = artistIdC, artists = artistC, trackNumber = noOFSongsC
+                    )
+                )
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        } while (cursor.moveToNext())
+    }
     cursor?.close()
     return tempList
 }
@@ -182,10 +298,15 @@ public fun setMusicPosition(increment: Boolean) {
 fun formatDuration(duration: Long): String {
     val minutes = TimeUnit.MINUTES.convert(duration, TimeUnit.MILLISECONDS)
     val seconds = (TimeUnit.SECONDS.convert(
-        duration,
-        TimeUnit.MILLISECONDS
+        duration, TimeUnit.MILLISECONDS
     ) - minutes * TimeUnit.SECONDS.convert(1, TimeUnit.MINUTES))
     return String.format("%02d:%02d", minutes, seconds)
+}
+
+fun formatDate(time: Long): String {
+    return DateFormat.getDateTimeInstance(
+        DateFormat.SHORT, DateFormat.MEDIUM
+    ).format(time)
 }
 
 fun exitApplication() {

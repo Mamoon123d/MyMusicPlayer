@@ -9,6 +9,7 @@ import com.musicplayer.android.base.MyPageAdapter
 import com.musicplayer.android.databinding.FolderActivityBinding
 import com.musicplayer.android.model.VideoMainData
 import com.musicplayer.android.model.getAllFolderVideo
+import com.musicplayer.android.utils.Extension.Companion.gone
 
 class FolderActivity : BaseActivity<FolderActivityBinding>() {
     companion object{
@@ -53,9 +54,10 @@ class FolderActivity : BaseActivity<FolderActivityBinding>() {
     private fun setTabs() {
         val vpa = MyPageAdapter(supportFragmentManager, lifecycle).apply {
             addFragment(AllFolderVideosFrag(),"Video")
-            addFragment(AllFolderVideosFrag(),"Folder")
+            //  addFragment(AllFolderVideosFrag(),"Folder")
         }
         binding.vp.adapter = vpa
+        binding.tabs.gone()
         TabLayoutMediator(binding.tabs, binding.vp) { tab, position ->
             when (position) {
                 0 -> {

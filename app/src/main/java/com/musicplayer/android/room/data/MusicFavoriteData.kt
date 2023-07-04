@@ -19,5 +19,6 @@ data class MusicFavoriteData(
     @ColumnInfo(name = "album") val album: String,
     @ColumnInfo(name = "artist") val artist: String,
     @ColumnInfo(name = "albumId") val albumId: String? = null,
+    @ColumnInfo(name = "artistId") val artistId: String? = null,
     @ColumnInfo(name = "isFavourite") var isFavourite: Boolean? = false,
 )

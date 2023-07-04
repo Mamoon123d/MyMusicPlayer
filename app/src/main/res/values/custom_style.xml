@@ -2,6 +2,6 @@
 <resources>
     <style name = "curved">
         <item name = "cornerSize">15%</item>
-        <item name = "android:radius">@dimen/dp_20 </item>
+        <item name = "android:radius">20dp</item>
     </style>
 </resources>

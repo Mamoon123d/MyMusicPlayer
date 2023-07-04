@@ -24,7 +24,7 @@ class NotificationReceiver : BroadcastReceiver() {
     private fun playMusic() {
         MPlayerActivity.isPlaying = true
         MPlayerActivity.musicService!!.mediaPlayer!!.start()
-        MPlayerActivity.musicService!!.showNotification(R.drawable.ic_pause_circle)
+        MPlayerActivity.musicService!!.showNotification(MusicService.PAUSE_IMAGE)
         MPlayerActivity.mpBinding.playPauseBt.setImageResource(R.drawable.ic_pause_circle)
         NowPlayingFrag.nowPlayBinding.playPauseBt.setImageResource(R.drawable.pause_icon)
     }
@@ -32,7 +32,7 @@ class NotificationReceiver : BroadcastReceiver() {
     private fun pauseMusic() {
         MPlayerActivity.isPlaying = false
         MPlayerActivity.musicService!!.mediaPlayer!!.pause()
-        MPlayerActivity.musicService!!.showNotification(R.drawable.ic_play_circle)
+        MPlayerActivity.musicService!!.showNotification(MusicService.PLAY_IMAGE)
         MPlayerActivity.mpBinding.playPauseBt.setImageResource(R.drawable.ic_play_circle)
         NowPlayingFrag.nowPlayBinding.playPauseBt.setImageResource(R.drawable.play_icon)
 

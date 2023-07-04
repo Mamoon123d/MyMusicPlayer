@@ -14,6 +14,7 @@ class PlAdapter(context: Context,
     class MyHolder(val binding: PlaylistItemBinding) : BaseRvViewHolder(binding) {
         fun bind(context: Context, t: PlayListData) {
             binding.pTitle.text=t.title
+            
         }
 
     }

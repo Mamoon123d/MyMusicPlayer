@@ -12,11 +12,15 @@ import com.musicplayer.android.base.BaseRvAdapter2
 import com.musicplayer.android.base.BaseRvViewHolder
 import com.musicplayer.android.databinding.VideoItemBinding
 import com.musicplayer.android.model.VideoMainData
+import com.musicplayer.android.model.VideoMainData.Companion.DATE_TYPE
+import com.musicplayer.android.model.formatVideoDate
 import com.musicplayer.android.room.database.Db
 import com.musicplayer.android.room.repo.Repository
 import com.musicplayer.android.room.vm.MainViewModel
 import com.musicplayer.android.utils.Extension.Companion.gone
 import com.musicplayer.android.utils.Extension.Companion.visible
+import java.io.File
+
 
 class VideoAdapter(
     context: Context,
@@ -47,6 +51,14 @@ class VideoAdapter(
             ) {
             binding.vTitle.text = data.title
 
+            binding.dateTv.apply {
+                if (data.type == DATE_TYPE) {
+                    visible()
+                    text = formatVideoDate(File(data.path).lastModified())
+                } else {
+                    gone()
+                }
+            }
             binding.vFolder.apply {
 
                 if (data.path.contains("/Movies/")) {
@@ -70,6 +82,9 @@ class VideoAdapter(
                 append(data.size)
             }
 
+           // val bitmap = BitmapFactory.decodeFile(data.path)
+            //val bitmap_ = ImageHelper.getRoundedCornerBitmap(bitmap, 20)
+
             Glide.with(context)
                 .asBitmap()
                 .load(data.artUri)
@@ -77,7 +92,7 @@ class VideoAdapter(
                 .into(binding.vThumbnail)
 
             binding.moreImg.setOnClickListener {
-                if (onMoreOptionClickListener!=null) {
+                if (onMoreOptionClickListener != null) {
                     onMoreOptionClickListener!!.onMoreOptionClick(data, position)
                 }
             }
@@ -93,6 +108,8 @@ class VideoAdapter(
                 }
 
             }
+
+
         }
 
         fun getPixelsString(pixelsC: String?): String {
@@ -118,6 +135,7 @@ class VideoAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyHolder {
+
         return MyHolder(
             VideoItemBinding.inflate(
                 LayoutInflater.from(parent.context),

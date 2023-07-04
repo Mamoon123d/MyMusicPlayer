@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/pl_con"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/x20"
+        android:layout_marginTop="@dimen/x10"
+        android:background="@drawable/selectable_item_background">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivPl"
+            android:layout_width="@dimen/qb_px_70"
+            android:layout_height="@dimen/qb_px_70"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/music_ph" />
+
+        <TextView
+            android:id="@+id/pl_tv"
+            android:layout_width="@dimen/x0"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="@dimen/x8"
+            android:text="@string/playlist"
+            android:textColor="@color/text_3"
+            android:textSize="@dimen/sp16"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/g_line3"
+            app:layout_constraintEnd_toStartOf="@+id/iv_play3"
+            app:layout_constraintStart_toEndOf="@+id/ivPl" />
+
+        <View
+            android:id="@+id/g_line3"
+            android:layout_width="@dimen/x0"
+            android:layout_height="@dimen/x2"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/iv_play3"
+            app:layout_constraintStart_toEndOf="@+id/ivPl"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/pl_songs_tv"
+            android:layout_width="@dimen/x0"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="@dimen/x8"
+            android:text="@string/all"
+            android:textColor="@color/text_5"
+            android:textSize="@dimen/sp12"
+            app:layout_constraintEnd_toStartOf="@+id/iv_play3"
+            app:layout_constraintStart_toEndOf="@+id/ivPl"
+            app:layout_constraintTop_toBottomOf="@+id/g_line3" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_play3"
+            android:layout_width="@dimen/x20"
+            android:layout_height="@dimen/x20"
+            android:tint="@color/text_3"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/play_icon" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

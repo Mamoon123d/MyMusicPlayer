@@ -9,6 +9,9 @@ import com.musicplayer.android.adapter.AllSMAdapter
 import com.musicplayer.android.base.BaseFragment
 import com.musicplayer.android.base.BaseRvAdapter2
 import com.musicplayer.android.databinding.FragmentAllSongMusicBinding
+import com.musicplayer.android.model.MainMusicData
+import com.musicplayer.android.utils.DataSet
+import com.musicplayer.android.utils.MoreMusicBS
 
 
 class AllSongMusicFragment : BaseFragment<FragmentAllSongMusicBinding>() {
@@ -32,6 +35,7 @@ class AllSongMusicFragment : BaseFragment<FragmentAllSongMusicBinding>() {
 
         binding.audioRecycler.apply {
             adapter = AllSMAdapter(mActivity, MainActivity.audioList).apply {
+                adapter
                 setOnItemClickListener(object : BaseRvAdapter2.OnItemClickListener {
                     override fun onItemClick(v: View?, position: Int) {
                         val b = Bundle()
@@ -40,10 +44,23 @@ class AllSongMusicFragment : BaseFragment<FragmentAllSongMusicBinding>() {
                         //showMsg(MainActivity.audioList[position].artist)
                     }
                 })
+                setOnMoreOptionClickListenerX(object : AllSMAdapter.OnMoreOptionClickListener {
+                    override fun onMoreOptionClick(data: MainMusicData, position: Int) {
+                        //  showMsg("more")
+                        MoreMusicBS(
+                            context = mActivity,
+                            musicData = data,
+                            musicAdapter = adapter,
+                            music_position = position,
+                            DataSet.Reference.MUSIC_ALL
+                        )
+                    }
+
+                })
+
             }
             layoutManager = LinearLayoutManager(mActivity)
         }
-
 
     }
 

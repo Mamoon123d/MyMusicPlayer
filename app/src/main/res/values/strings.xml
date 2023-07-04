@@ -165,5 +165,25 @@
     <string name="all">All</string>
     <string name="recently_played">Recently Played</string>
     <string name="favorite">Favorite</string>
+    <string name="subtitle_dummy">All songs are collected in this playlist</string>
+    <string name="artist">Artist</string>
+    <string name="album">Album</string>
+    <string name="network_guide">This function requires networking, please connect to the network</string>
+    <string name="play">Play</string>
+    <string name="game">Game</string>
+    <string name="invite_friends">Invite Friends</string>
+    <string name="total_coins">Total coins</string>
+    <string name="player_id">Player Id</string>
+    <string name="email">Email</string>
+    <string name="sd_inst">*Apple, Google, Paytm, Paypal, Pubg, Freefire and Amazon are not a sponsor nor are involved in any way in this contest/draw/app rewards. no apple products are being used as prizes.</string>
+    <string name="inst3">*Your Redeem will be confirmed within 24 hrs.</string>
+    <string name="privacy_policy_"><u>privacy policy</u></string>
+    <string name="terms_of_service"><u>Terms of Service</u></string>
+    <string name="equalizer">Equalizer</string>
+    <string name="_60hz">60Hz</string>
+    <string name="_230hz">230Hz</string>
+    <string name="_910hz">910Hz</string>
+    <string name="_3600hz">3600Hz</string>
+    <string name="_14000hz">14000Hz</string>
 
 </resources>

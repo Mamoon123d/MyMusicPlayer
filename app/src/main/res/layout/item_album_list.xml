@@ -1,74 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    xmlns:android = "http://schemas.android.com/apk/res/android"
-    xmlns:app = "http://schemas.android.com/apk/res-auto">
-<data>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-</data><androidx.constraintlayout.widget.ConstraintLayout
-    android:layout_width = "match_parent"
-    android:layout_height = "wrap_content"
-    android:background = "@drawable/selectable_item_background"
-    android:paddingStart = "16dp"
-    android:paddingTop = "8dp"
-    android:paddingEnd = "16dp"
-    android:paddingBottom = "8dp">
-    <ImageView
-        android:id = "@+id/ivBackground"
-        android:layout_width = "25dp"
-        android:layout_height = "40dp"
-        android:layout_marginStart="-2dp"
-        android:src = "@drawable/img_album_cover"
-        android:rotationX="@integer/angle_rtl_180"
-        app:layout_constraintBottom_toBottomOf = "parent"
-        app:layout_constraintStart_toEndOf = "@+id/ivCover"
-        app:layout_constraintTop_toTopOf = "parent"
-        android:contentDescription = "@string/image_icon" />
-    <com.google.android.material.imageview.ShapeableImageView
-        android:id = "@+id/ivCover"
-        android:layout_width = "50dp"
-        android:layout_height = "50dp"
-        android:src = "@drawable/music_color_icon"
-        app:layout_constraintBottom_toBottomOf = "parent"
-        app:layout_constraintStart_toStartOf = "parent"
-        app:layout_constraintTop_toTopOf = "parent"
-        app:shapeAppearanceOverlay = "@style/curved"
-        />
-    <TextView
-        android:id = "@+id/tvName"
-        android:layout_width = "wrap_content"
-        android:layout_height = "wrap_content"
-        android:ellipsize = "end"
-        android:maxLines = "2"
-        android:textAlignment = "viewStart"
-        android:textColor = "@color/black"
-        android:textSize = "14sp"
-        android:text = "title"
-        app:layout_constraintBottom_toTopOf = "@+id/tvNum"
-        app:layout_constraintEnd_toStartOf = "@+id/ivArrow"
-        app:layout_constraintStart_toEndOf = "@+id/ivBackground"
-        app:layout_constraintTop_toTopOf = "parent"
-        />
-    <TextView
-        android:id = "@+id/tvNum"
-        android:layout_width = "wrap_content"
-        android:layout_height = "wrap_content"
-        android:paddingStart = "12dp"
-        android:paddingTop = "6dp"
-        android:textColor = "@color/black"
-        android:textSize = "12sp"
-        android:text = "20 Songs"
-        app:layout_constraintBottom_toBottomOf = "parent"
-        app:layout_constraintStart_toEndOf = "@+id/ivBackground"
-        app:layout_constraintTop_toBottomOf = "@+id/tvName" />
-    <ImageView
-        android:id = "@+id/ivArrow"
-        android:layout_width = "wrap_content"
-        android:layout_height = "wrap_content"
-        android:rotationX = "@integer/angle_rtl_180"
-        android:src = "@drawable/ic_arrow_right_small"
-        app:layout_constraintBottom_toBottomOf = "parent"
-        app:layout_constraintEnd_toEndOf = "parent"
-        app:layout_constraintTop_toTopOf = "parent"
-        android:contentDescription = "@string/image_icon" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/selectable_item_background"
+        android:paddingStart="16dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="8dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/album_con"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/qb_px_70"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/ivBackground"
+                android:layout_width="@dimen/qb_px_70"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/image_icon"
+                android:padding="@dimen/x2"
+                android:src="@drawable/disk"
+                app:layout_constraintEnd_toEndOf="@id/ivCover"
+                app:layout_constraintStart_toEndOf="@+id/ivCover" />
+
+           <!-- <com.musicplayer.android.utils.view.RoundedImageView
+                android:id="@+id/ivCover"
+                android:layout_width="@dimen/qb_px_70"
+                android:layout_height="match_parent"
+                android:elevation="@dimen/x4"
+                android:src="@drawable/music_color_icon"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                />-->
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/ivCover"
+                android:layout_width="@dimen/qb_px_70"
+                android:layout_height="match_parent"
+                android:elevation="@dimen/x4"
+                android:src="@drawable/music_color_icon"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:shapeAppearanceOverlay="@style/curved" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="@dimen/x0"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/ivArrow"
+            app:layout_constraintStart_toEndOf="@+id/album_con"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/album_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:text="@string/title"
+                android:textColor="@color/text_3"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/album_songs_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:text="2 songs"
+                android:textColor="@color/text_3"
+                android:textSize="12sp" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivArrow"
+            android:layout_width="@dimen/x20"
+            android:layout_height="@dimen/x20"
+            android:contentDescription="@string/image_icon"
+            android:src="@drawable/ic_arrow_right_small"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -14,6 +14,8 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+
+            <!--header-->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -34,6 +36,7 @@
                     android:id="@+id/ivAddPl"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
+                    android:visibility="gone"
                     android:layout_margin="20dp"
                     android:contentDescription="@string/image_icon"
                     android:src="@drawable/plus_small"
@@ -42,18 +45,19 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
-
+            <!--all-->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/all_con"
                 android:layout_width="match_parent"
                 android:background="@drawable/selectable_item_background"
                 android:layout_height="wrap_content"
-                android:paddingHorizontal="@dimen/x20">
+                android:layout_marginHorizontal="@dimen/x20">
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/ivPlAll"
-                    android:layout_width="@dimen/qb_px_80"
-                    android:layout_height="@dimen/qb_px_80"
+                    android:layout_width="@dimen/qb_px_70"
+                    android:layout_height="@dimen/qb_px_70"
+                    app:srcCompat="@drawable/all_img"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -103,18 +107,20 @@
                     app:srcCompat="@drawable/play_icon" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
+            <!--Recently played-->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/recent_con"
                 android:layout_width="match_parent"
                 android:layout_marginTop="@dimen/x10"
                 android:background="@drawable/selectable_item_background"
                 android:layout_height="wrap_content"
-                android:paddingHorizontal="@dimen/x20">
+                android:layout_marginHorizontal="@dimen/x20">
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/ivRp"
-                    android:layout_width="@dimen/qb_px_80"
-                    android:layout_height="@dimen/qb_px_80"
+                    android:layout_width="@dimen/qb_px_70"
+                    android:layout_height="@dimen/qb_px_70"
+                    app:srcCompat="@drawable/new_img"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -164,19 +170,21 @@
                     app:srcCompat="@drawable/play_icon" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
+            <!--Favorite-->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/fav_con"
                 android:layout_width="match_parent"
                 android:layout_marginTop="@dimen/x10"
                 android:background="@drawable/selectable_item_background"
                 android:layout_height="wrap_content"
-                android:paddingHorizontal="@dimen/x20">
+                android:layout_marginHorizontal="@dimen/x20">
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/ivFav"
-                    android:layout_width="@dimen/qb_px_80"
-                    android:layout_height="@dimen/qb_px_80"
+                    android:layout_width="@dimen/qb_px_70"
+                    android:layout_height="@dimen/qb_px_70"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    app:srcCompat="@drawable/fav_img"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -226,6 +234,12 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvPl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:listitem="@layout/playlist2_item"
+                />
         </androidx.appcompat.widget.LinearLayoutCompat>
 
 

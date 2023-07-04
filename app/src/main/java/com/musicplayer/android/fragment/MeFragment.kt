@@ -1,59 +1,53 @@
 package com.musicplayer.android.fragment
 
-import android.annotation.SuppressLint
-import android.content.Context
-import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import com.musicplayer.android.R
+import com.musicplayer.android.activity.SettingsPage
 import com.musicplayer.android.adapter.MeCategoryAdapter
+import com.musicplayer.android.base.BaseFragment
+import com.musicplayer.android.base.BaseRvAdapter2
 import com.musicplayer.android.databinding.FragmentMeBinding
 import com.musicplayer.android.model.MeCategoryData
 
-class MeFragment : Fragment() {
-    lateinit var binding: FragmentMeBinding
-    private lateinit var mActivity: FragmentActivity
+class MeFragment : BaseFragment<FragmentMeBinding>() {
+    override fun setLayoutId(): Int {
+        return R.layout.fragment_me
+    }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        if (context is FragmentActivity) {
-            mActivity = context
+    override fun initM() {
+        binding.settings.setOnClickListener {
+            goActivity(SettingsPage())
         }
-    }
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        binding = DataBindingUtil.inflate(inflater,R.layout.fragment_me, container, false)
-        return binding.root
+        setContent()
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    private fun setContent() {
         val data = ArrayList<MeCategoryData>()
-       /* for (i in 1..20) {
-            data.add(MeCategoryData( "Item $i", R.drawable.youtube_cover))
-        }*/
-        val adapter = MeCategoryAdapter(data,mActivity)
-        val categoryRV=binding.rvMe
-        categoryRV.adapter = adapter
-        val layoutManager = GridLayoutManager(mActivity, 3)
-        categoryRV.layoutManager = layoutManager
-        val categoryRVAdapter = MeCategoryAdapter(data, mActivity)
-        categoryRV.adapter =categoryRVAdapter
-
-        // on below line we are adding data to our list
+        /* for (i in 1..20) {
+             data.add(MeCategoryData( "Item $i", R.drawable.youtube_cover))
+         }*/
         data.add(MeCategoryData("Downloads", R.drawable.download))
         data.add(MeCategoryData("MP3 Converter", R.drawable.mp3))
         data.add(MeCategoryData("Privacy", R.drawable.feedback))
         data.add(MeCategoryData("History", R.drawable.history))
         data.add(MeCategoryData("Media Manage", R.drawable.rate_us))
-      //  categoryRVAdapter.notifyDataSetChanged()
+        val adapter = MeCategoryAdapter(mActivity, data)
+        // val categoryRV = binding.rvMe
+
+        binding.rvMe.apply {
+            this.adapter = adapter.apply {
+                setOnItemClickListener(object : BaseRvAdapter2.OnItemClickListener {
+                    override fun onItemClick(v: View?, position: Int) {
+                        if (position == 3) {
+                            goActivity(History())
+                        }
+                    }
+                })
+            }
+            layoutManager = GridLayoutManager(mActivity, 3)
+        }
+
+
     }
 }

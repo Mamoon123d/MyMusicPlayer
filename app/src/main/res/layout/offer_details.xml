@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/tb"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/qb_px_55"
+            android:background="@color/first_color"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/back_img"
+                android:layout_width="@dimen/qb_px_40"
+                android:layout_height="match_parent"
+                android:padding="@dimen/x6"
+                android:tint="@color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/back_icon" />
+
+            <TextView
+                android:id="@+id/title_tv"
+                android:layout_width="@dimen/x0"
+                android:layout_height="wrap_content"
+                android:lines="1"
+                android:paddingHorizontal="@dimen/x4"
+                android:text="Offer Details"
+                android:textColor="@color/text_1"
+                android:textSize="@dimen/sp18"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/back_img"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/x0"
+            android:padding="@dimen/x10"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tb">
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_offer_item"
+                android:orientation="vertical"
+                android:padding="@dimen/x20">
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/offer_iv"
+                    android:layout_width="@dimen/qb_px_80"
+                    android:layout_height="@dimen/qb_px_80"
+                    android:layout_gravity="center_horizontal"
+                    app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.MediumComponent" />
+
+                <TextView
+                    android:id="@+id/tvTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:lines="1"
+                    android:paddingTop="@dimen/qb_px_4"
+                    android:text="@string/title"
+                    android:textColor="@color/text_3"
+                    android:textSize="@dimen/sp18"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvSubtitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:lines="1"
+                    android:text="@string/title"
+                    android:textColor="@color/text_5"
+                    android:textSize="@dimen/sp16"
+                    android:textStyle="normal" />
+
+                <TextView
+                    android:id="@+id/tvDes"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/x20"
+                    android:text="@string/title"
+                    android:textAlignment="center"
+                    android:textColor="@color/text_3"
+                    android:textSize="@dimen/sp14"
+                    android:textStyle="normal" />
+
+                <com.musicplayer.android.utils.view.MyListView
+                    android:id="@+id/payout_lv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/x10"
+                    android:background="@drawable/bg_payout" />
+
+                <TextView
+                    android:id="@+id/tvLocDes"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/x10"
+                    android:text="@string/title"
+                    android:textAlignment="center"
+                    android:textColor="@color/text_3"
+                    android:textSize="@dimen/sp14"
+                    android:textStyle="normal" />
+
+                <com.applovin.mediation.ads.MaxAdView
+                    xmlns:maxads="http://schemas.applovin.com/android/1.0"
+                    android:id="@+id/mr_ad"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
+                    android:layout_marginVertical="@dimen/x10"
+                    maxads:adFormat="MREC"
+                    maxads:adUnitId="8ed3c53aaa5559c3" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+        </androidx.core.widget.NestedScrollView>
+
+        <TextView
+            android:id="@+id/install_bt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/qb_px_20"
+            android:layout_marginVertical="@dimen/x10"
+            android:background="@drawable/bg_solid_btn"
+            android:padding="@dimen/qb_px_8"
+            android:text="Install &amp; Register"
+            android:textAlignment="center"
+            android:textColor="@color/text_1"
+            android:textSize="@dimen/sp18"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

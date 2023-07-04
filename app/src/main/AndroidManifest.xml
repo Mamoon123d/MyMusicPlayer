@@ -33,10 +33,12 @@
         android:requestLegacyExternalStorage="true"
         android:supportsRtl="true"
         android:largeHeap="true"
-        android:hardwareAccelerated="false"
         android:theme="@style/Theme.MusicPlayer"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
+        <meta-data
+            android:name="applovin.sdk.key"
+            android:value="DC3vhLHQCANR15zVXP2Sv3t7zm54bqMAU4kAQswhy6U1hEyFQhlkwPivIexOxo3O3Uys9xvImVL5FD8P05N82A" />
         <activity
             android:name=".video.FolderVideoActivity"
             android:screenOrientation="portrait"
@@ -51,12 +53,7 @@
         </activity>
         <activity
             android:name=".MainActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            >
         </activity>
         <activity
             android:name="com.musicplayer.android.activity.PlayerActivity"
@@ -83,10 +80,61 @@
         <activity
             android:name="com.musicplayer.android.music.MPlayerActivity"
             android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar" />
+        <activity
+            android:name="com.musicplayer.android.music.MusicListHome"
+            android:theme="@style/AppTheme" />
+
+        <activity
+            android:name="com.musicplayer.android.music.MusicPlaylistView"
+            android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar" />
+        <activity
+            android:name="com.musicplayer.android.game.GameView"
+            android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar" />
+        <activity
+            android:name="com.musicplayer.android.game.GameCategory"
+            android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar" />
+
+        <activity
+            android:name="com.musicplayer.android.offer.OfferList"
+            android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar" />
+        <activity
+            android:name="com.musicplayer.android.offer.OfferDetails"
+            android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar" />
+
+        <activity
+            android:name="com.musicplayer.android.activity.Invite"
+            android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar" />
+
+        <activity
+            android:name="com.musicplayer.android.offer.Rewards"
+            android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar" />
+
+        <activity
+            android:name="com.musicplayer.android.offer.RedeemSubmit"
+            android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar" />
+        <activity
+            android:name="com.musicplayer.android.activity.TransactionPage"
+            android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar" />
+        <activity
+            android:name="com.musicplayer.android.activity.Splash"
+            android:exported="true"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name="com.musicplayer.android.activity.SettingsPage" />
+        <activity
+            android:name="com.musicplayer.android.fragment.History"
+            android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar" />
 
         <service
             android:name=".music.MusicService"
             android:exported="true" />
+
         <receiver
             android:name=".music.NotificationReceiver"
             android:enabled="true"

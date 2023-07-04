@@ -109,13 +109,14 @@
                 android:contentDescription = "@string/video_list_show_by_sort"
                 />
                 <ImageView
-                android:layout_width = "20dp"
-                android:layout_height = "20dp"
-                android:src="@drawable/grid_view"
-                android:layout_marginTop="25dp"
-                android:layout_marginStart="25dp"
-                android:layout_weight="1"
-                android:contentDescription = "@string/toggle_grid_or_list_view" />
+                    android:id="@+id/gridBt"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="25dp"
+                    android:layout_marginTop="25dp"
+                    android:layout_weight="1"
+                    android:contentDescription="@string/toggle_grid_or_list_view"
+                    android:src="@drawable/grid_view" />
             </LinearLayout>
 
         </com.google.android.material.appbar.AppBarLayout>

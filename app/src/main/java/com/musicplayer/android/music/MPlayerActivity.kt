@@ -4,31 +4,36 @@ import android.Manifest
 import android.app.Dialog
 import android.content.*
 import android.content.pm.PackageManager
+import android.database.Cursor
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Color
+import android.media.AudioManager
 import android.media.MediaPlayer
 import android.media.RingtoneManager
 import android.net.Uri
-import android.os.Build
-import android.os.Handler
-import android.os.IBinder
-import android.os.Looper
+import android.os.*
 import android.provider.MediaStore
 import android.provider.Settings
 import android.text.TextUtils
 import android.text.format.DateUtils
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.Window
+import android.view.*
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
+import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.core.view.WindowCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.applovin.mediation.MaxAd
+import com.applovin.mediation.MaxAdViewAdListener
+import com.applovin.mediation.MaxError
+import com.bullhead.equalizer.DialogEqualizerFragment
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.musicplayer.android.MainActivity
 import com.musicplayer.android.R
@@ -44,12 +49,18 @@ import com.musicplayer.android.model.*
 import com.musicplayer.android.room.data.MusicFavoriteData
 import com.musicplayer.android.room.data.MusicItemPlData
 import com.musicplayer.android.room.data.MusicPlayListData
+import com.musicplayer.android.room.data.RecentMusicItemData
 import com.musicplayer.android.room.database.Db
 import com.musicplayer.android.room.factory.MainMvFactory
 import com.musicplayer.android.room.repo.Repository
 import com.musicplayer.android.room.vm.MainViewModel
+import com.musicplayer.android.utils.DataSet
+import com.musicplayer.android.utils.Extension.Companion.gone
+import com.musicplayer.android.utils.MyIntent
+import com.musicplayer.android.utils.view.equalizer.EqualizerBs
 import com.musicplayer.android.utils.view.visualizer.CircleVisualizer
 import java.io.File
+import java.util.*
 
 
 @Suppress("DEPRECATION")
@@ -72,14 +83,16 @@ class MPlayerActivity : BaseActivity<MplayerActivityBinding>(), ServiceConnectio
         var isFavorite: Boolean = false
 
         //ringtone
-        private const val PHONE_RINGTONE: Int = 1
-        private const val ALARM_RINGTONE: Int = 2
-        private const val NOTIFICATION_RINGTONE: Int = 3
-        private var isForPhone: Boolean = false
-        private var isForAlarm: Boolean = false
-        private var isForNoti: Boolean = false
+        public const val PHONE_RINGTONE: Int = 1
+        public const val ALARM_RINGTONE: Int = 2
+        public const val NOTIFICATION_RINGTONE: Int = 3
+        public var isForPhone: Boolean = false
+        public var isForAlarm: Boolean = false
+        public var isForNoti: Boolean = false
 
-        private const val CODE_WRITE_SETTINGS_PERMISSION: Int = 124
+        public var endOfTrack: Boolean = false
+
+        public const val CODE_WRITE_SETTINGS_PERMISSION: Int = 124
 
 
     }
@@ -92,7 +105,34 @@ class MPlayerActivity : BaseActivity<MplayerActivityBinding>(), ServiceConnectio
         //for db
         initializeDb()
         setTb()
-        initializeLayout()
+        if (intent.data?.scheme.contentEquals("content")) {
+            songPosition = 0
+            val intentService = Intent(this, MusicService::class.java)
+            bindService(intentService, this, BIND_AUTO_CREATE)
+            startService(intentService)
+            audioList = ArrayList()
+            audioList.add(getMusicDetails(intent.data!!))
+
+            Glide.with(this)
+                .load(getImageArt(audioList[songPosition].path))
+                .apply(RequestOptions().placeholder(R.drawable.music_ph).centerCrop())
+                .into(binding.albumCover)
+            binding.tvSongName.text = audioList[songPosition].title
+        } else initializeLayout()
+
+
+        if (Build.VERSION.SDK_INT in 21..29) {
+            window.statusBarColor = Color.TRANSPARENT
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+            window.decorView.systemUiVisibility =
+                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+
+        } else if (Build.VERSION.SDK_INT >= 30) {
+            window.statusBarColor = Color.TRANSPARENT
+            // Making status bar overlaps with the activity
+            WindowCompat.setDecorFitsSystemWindows(window, false)
+        }
 
         //for share file
         binding.shareImg.setOnClickListener {
@@ -122,6 +162,7 @@ class MPlayerActivity : BaseActivity<MplayerActivityBinding>(), ServiceConnectio
             override fun onProgressChanged(seekB: SeekBar?, progress: Int, fromUser: Boolean) {
                 if (fromUser) {
                     musicService!!.mediaPlayer!!.seekTo(progress)
+                    musicService!!.showNotification(if (isPlaying) R.drawable.pause_icon else R.drawable.play_icon)
                 }
             }
 
@@ -134,7 +175,9 @@ class MPlayerActivity : BaseActivity<MplayerActivityBinding>(), ServiceConnectio
         binding.repeatBt.setOnClickListener {
             if (!isRepeat) {
                 isRepeat = true
+                //change repeat drawable button
             } else {
+                //change repeat drawable button
                 isRepeat = false
             }
         }
@@ -198,15 +241,18 @@ class MPlayerActivity : BaseActivity<MplayerActivityBinding>(), ServiceConnectio
                                         Thread.sleep(15 * 60000)
                                         if (min15) exitApplication()
                                     }.start()*/
+                                    endOfTrack = true
                                 }
                                 1 -> {
-                                    min15 = true
-                                    Thread {
+                                    // min15 = true
+                                    endOfTrack = false
+                                    /*Thread {
                                         Thread.sleep(15 * 60000)
                                         if (min15) exitApplication()
-                                    }.start()
-                                }
+                                    }.start()*/
+                                    // musicService!!.setTimer(1)
 
+                                }
                             }
                             bs.dismiss()
                         }
@@ -225,14 +271,31 @@ class MPlayerActivity : BaseActivity<MplayerActivityBinding>(), ServiceConnectio
         binding.echoBt.setOnClickListener {
             /*  val bs = BottomSheetDialog(mActivity)
               val binding_sheet = EchoLayoutBinding.inflate(LayoutInflater.from(mActivity))
-              bs.setContentView(binding_sheet.root)*/
+              bs.setContentView(binding_sheet.root)
+              val sessionId: Int = musicService!!.mediaPlayer!!.audioSessionId
+              musicService!!.mediaPlayer!!.setLooping(true)
+              val equalizerFragment = EqualizerFragment.newBuilder()
+                  .setAccentColor(Color.parseColor("#4caf50"))
+                  .setAudioSessionId(sessionId)
+                  .build()
+              supportFragmentManager.beginTransaction()
+                  .replace(binding_sheet.eqFrame, equalizerFragment)
+                  .commit()
+              bs.show()*/
 
-            // val i =  Intent(AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION)
+            //-------------------------------------------------------
+            /* val i =  Intent(AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION)
+            if (i.resolveActivity(packageManager)!=null){
+                startActivity(i)
+            }else{
+                 showMsg("No equalizer")
+            }*/
             // i.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, packageName)
             // i.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, musicService!!.mediaPlayer!!.audioSessionId)
             //startActivity(i)
 
-
+            // showEqualizer()
+            EqualizerBs(mActivity, 1)
         }
 
         binding.moreOptionBt.setOnClickListener {
@@ -241,7 +304,6 @@ class MPlayerActivity : BaseActivity<MplayerActivityBinding>(), ServiceConnectio
             bs.setContentView(binding_sheet.root)
             binding_sheet.ringCon.setOnClickListener {
                 showRingtoneOpt()
-
                 bs.dismiss()
             }
 
@@ -259,8 +321,89 @@ class MPlayerActivity : BaseActivity<MplayerActivityBinding>(), ServiceConnectio
         binding.songListBt.setOnClickListener {
             openSongList()
         }
-        addMusicService()
+        createMrecAd()
+        setAd()
     }
+
+    private fun setAd() {
+        var i = 5
+        object : CountDownTimer(1000 * i.toLong(), 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                binding.adTime.text = "00:0$i"
+                i--
+            }
+
+            override fun onFinish() {
+                binding.adCon.gone()
+            }
+
+        }.start()
+    }
+
+    fun createMrecAd() {
+        val adView = binding.mrAd
+        val listener = object : MaxAdViewAdListener {
+            override fun onAdLoaded(p0: MaxAd?) {
+
+            }
+
+            override fun onAdDisplayed(p0: MaxAd?) {
+            }
+
+            override fun onAdHidden(p0: MaxAd?) {
+            }
+
+            override fun onAdClicked(p0: MaxAd?) {
+            }
+
+            override fun onAdLoadFailed(p0: String?, p1: MaxError?) {
+            }
+
+            override fun onAdDisplayFailed(p0: MaxAd?, p1: MaxError?) {
+            }
+
+            override fun onAdExpanded(p0: MaxAd?) {
+            }
+
+            override fun onAdCollapsed(p0: MaxAd?) {
+            }
+
+
+        }
+        adView?.setListener(listener)
+
+        // MREC width and height are 300 and 250 respectively, on phones and tablets
+        /*  val widthPx = AppLovinSdkUtils.dpToPx(this, 300)
+          val heightPx = AppLovinSdkUtils.dpToPx(this, 250)
+
+          adView?.layoutParams = FrameLayout.LayoutParams(widthPx, heightPx)
+
+          // Set background or background color for MRECs to be fully functional
+         // adView?.setBackgroundColor(...)
+
+          val rootView = findViewById<ViewGroup>(android.R.id.content)
+          rootView.addView(adView)*/
+
+        // Load the ad
+        adView.loadAd()
+
+        adView?.startAutoRefresh()
+    }
+
+
+    private fun showEqualizer() {
+        val sessionId: Int = musicService!!.mediaPlayer!!.audioSessionId
+        val fragment = DialogEqualizerFragment.newBuilder()
+            .setAudioSessionId(sessionId)
+            .themeColor(ContextCompat.getColor(this, R.color.first_color))
+            .textColor(ContextCompat.getColor(this, R.color.text_2))
+            .accentAlpha(ContextCompat.getColor(this, R.color.fifth_color))
+            .darkColor(ContextCompat.getColor(this, R.color.fifth_color))
+            .setAccentColor(ContextCompat.getColor(this, R.color.fifth_color))
+            .build()
+        fragment.show(supportFragmentManager, "eq")
+    }
+
 
     private fun shareFile() {
 
@@ -282,8 +425,12 @@ class MPlayerActivity : BaseActivity<MplayerActivityBinding>(), ServiceConnectio
                 adapter
                 setOnItemCloseListener(object : MusicBsAdapter.OnItemCloseListener {
                     override fun onItemClose(position: Int) {
-                        audioList.removeAt(position)
-                        adapter!!.notifyItemRemoved(position)
+                        if (audioList.size > 1) {
+                            audioList.removeAt(position)
+                            adapter!!.notifyItemRemoved(position)
+                        } else {
+                            exitApplication()
+                        }
                     }
 
                 })
@@ -356,6 +503,9 @@ class MPlayerActivity : BaseActivity<MplayerActivityBinding>(), ServiceConnectio
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == 13 || resultCode == RESULT_OK)
+            return
         if (requestCode == CODE_WRITE_SETTINGS_PERMISSION && Settings.System.canWrite(mActivity)) {
             if (isForPhone)
                 setRingtone(PHONE_RINGTONE)
@@ -662,14 +812,98 @@ class MPlayerActivity : BaseActivity<MplayerActivityBinding>(), ServiceConnectio
 
     private fun initializeLayout() {
         mpBinding = binding
-        audioList = ArrayList()
-        audioList = MainActivity.audioList
-        songPosition = intent.getIntExtra("pos", -1)
+        val ref = intent.getIntExtra(MyIntent.CLASS, -1)
 
         //from player list
-        setLayout()
-        createMediaPlayer()
+        when (ref) {
+            DataSet.Reference.MUSIC_ALBUM -> {
+                audioList = ArrayList()
+                audioList = MusicListHome.audioList
+                setLayout()
+                createMediaPlayer()
+                addMusicService()
 
+            }
+            DataSet.Reference.MUSIC_FOLDER -> {
+                audioList = ArrayList()
+                audioList = MusicListHome.audioList
+                setLayout()
+                createMediaPlayer()
+                addMusicService()
+
+            }
+            DataSet.Reference.MUSIC_ARTIST -> {
+                audioList = ArrayList()
+                audioList = MusicListHome.audioList
+                setLayout()
+                createMediaPlayer()
+                addMusicService()
+
+            }
+            //for playlist section
+            DataSet.Reference.MUSIC_ALL_PL -> {
+                audioList = ArrayList()
+                audioList = MusicPlaylistView.audioList
+                setLayout()
+                createMediaPlayer()
+                addMusicService()
+
+            }
+            DataSet.Reference.MUSIC_FAVORITE -> {
+                audioList = ArrayList()
+                audioList = MusicPlaylistView.audioList
+                setLayout()
+                createMediaPlayer()
+                addMusicService()
+
+            }
+            DataSet.Reference.MUSIC_RECENT -> {
+                audioList = ArrayList()
+                audioList = MusicPlaylistView.audioList
+                setLayout()
+                createMediaPlayer()
+                addMusicService()
+
+            }
+            DataSet.Reference.MUSIC_ALL -> {
+                audioList = ArrayList()
+                audioList = MainActivity.audioList
+                setLayout()
+                createMediaPlayer()
+                addMusicService()
+
+            }
+            DataSet.Reference.MUSIC_PLAYLIST -> {
+                audioList = ArrayList()
+                audioList = MusicPlaylistView.audioList
+                setLayout()
+                createMediaPlayer()
+                addMusicService()
+
+            }
+            DataSet.Reference.MUSIC_NOW_PLAY -> {
+                // audioList = ArrayList()
+                setLayout()
+                binding.totalTime.text =
+                    formatDuration(musicService!!.mediaPlayer!!.duration.toLong())
+                binding.remainTime.text =
+                    formatDuration(musicService!!.mediaPlayer!!.currentPosition.toLong())
+                binding.seekBar.progress = musicService!!.mediaPlayer!!.currentPosition
+                binding.seekBar.max = musicService!!.mediaPlayer!!.duration
+                if (isPlaying) binding.playPauseBt.setImageResource(R.drawable.ic_pause_circle)
+                else binding.playPauseBt.setImageResource(R.drawable.ic_play_circle)
+            }
+            else -> {
+                songPosition = intent.getIntExtra("pos", -1)
+                audioList = ArrayList()
+                audioList = MainActivity.audioList
+                setLayout()
+                createMediaPlayer()
+                addMusicService()
+            }
+        }
+
+        if (musicService != null && isPlaying) playMusic()
     }
 
 
@@ -716,6 +950,8 @@ class MPlayerActivity : BaseActivity<MplayerActivityBinding>(), ServiceConnectio
 
                   }
               }*/
+            updateRecentMusic()
+
         }
 
 
@@ -730,13 +966,13 @@ class MPlayerActivity : BaseActivity<MplayerActivityBinding>(), ServiceConnectio
         binding.tvArtistAndAlbum.text = data.artist
         binding.albumCover.apply {
             // setImageBitmap(bitmap)
-            Glide.with(mActivity).asBitmap().load(data.artUri).into(binding.albumCover)
+            Glide.with(mActivity).asBitmap().circleCrop().load(data.artUri).into(binding.albumCover)
         }
 
 
         //set audio visual
-        audioVisual = binding.visualizer
-        audioVisual.isDrawLine = true
+        // audioVisual = binding.visualizer
+        // audioVisual.isDrawLine = true
 
         if (mainViewModel != null) {
             initializeDb()
@@ -753,9 +989,7 @@ class MPlayerActivity : BaseActivity<MplayerActivityBinding>(), ServiceConnectio
                     isFavorite = false
                 }
             }
-
         }
-
     }
 
     private fun createMediaPlayer() {
@@ -764,23 +998,60 @@ class MPlayerActivity : BaseActivity<MplayerActivityBinding>(), ServiceConnectio
         //media player
         try {
             if (musicService!!.mediaPlayer == null) musicService!!.mediaPlayer = MediaPlayer()
-
             musicService!!.mediaPlayer!!.reset()
             musicService!!.mediaPlayer!!.setDataSource(audioList[songPosition].path)
             musicService!!.mediaPlayer!!.prepare()
             musicService!!.mediaPlayer!!.start()
             isPlaying = true
             binding.playPauseBt.setImageResource(R.drawable.ic_pause_circle)
-            musicService!!.showNotification(R.drawable.ic_pause_circle)
+            musicService!!.showNotification(MusicService.PAUSE_IMAGE)
             binding.remainTime.text =
                 formatDuration(musicService!!.mediaPlayer!!.currentPosition.toLong())
             binding.totalTime.text = formatDuration(musicService!!.mediaPlayer!!.duration.toLong())
             binding.seekBar.progress = 0
             binding.seekBar.max = musicService!!.mediaPlayer!!.duration
             musicService!!.mediaPlayer!!.setOnCompletionListener(this)
-
         } catch (e: Exception) {
             return
+        }
+
+    }
+
+    private fun updateRecentMusic() {
+        val musicId = audioList[songPosition].id.trim()
+        // var isExist = false
+        val data = audioList[songPosition]
+        mainViewModel!!.isRecentMusicExists(musicId).observe(this) {
+            val recentData = RecentMusicItemData(
+                music_id = data.id.toLong(),
+                title = data.title,
+                duration = data.duration.toString(),
+                folderName = data.folderName,
+                size = data.size,
+                path = data.path,
+                artUri = data.artUri,
+                pixels = data.pixels,
+                album = data.album,
+                artist = data.artist,
+                albumId = data.albumId,
+                recentTime = Date().time.toString(),
+                isFavourite = data.isFavourite,
+            )
+
+            if (it > 1) {
+                mainViewModel!!.removeRecentMusic(recentData)
+            }
+            val isExist = it > 0
+
+            if (isExist) {
+                //update
+                //  showMsg("update")
+                mainViewModel!!.updateRecentMusic(recentData)
+            } else {
+                //insert
+                // showMsg("insert")
+                mainViewModel!!.addRecentMusic(recentData)
+            }
         }
 
     }
@@ -794,27 +1065,27 @@ class MPlayerActivity : BaseActivity<MplayerActivityBinding>(), ServiceConnectio
     }
 
     private fun playMusic() {
-        binding.playPauseBt.setImageResource(R.drawable.ic_pause_circle)
-        musicService!!.showNotification(R.drawable.ic_pause_circle)
         isPlaying = true
         musicService!!.mediaPlayer!!.start()
+        binding.playPauseBt.setImageResource(R.drawable.ic_pause_circle)
+        musicService!!.showNotification(MusicService.PAUSE_IMAGE)
 
-        val audioSessionId: Int = musicService!!.mediaPlayer!!.audioSessionId
-        try {
-            if (audioSessionId != -1) {
-                audioVisual.setAudioSessionId(audioSessionId)
-            }
-        } catch (e: Exception) {
-            audioVisual = binding.visualizer
-        }
+        /*  val audioSessionId: Int = musicService!!.mediaPlayer!!.audioSessionId
+          try {
+              if (audioSessionId != -1) {
+                  audioVisual.setAudioSessionId(audioSessionId)
+              }
+          } catch (e: Exception) {
+              audioVisual = binding.visualizer
+          }*/
 
     }
 
     private fun pauseMusic() {
-        binding.playPauseBt.setImageResource(R.drawable.ic_play_circle)
-        musicService!!.showNotification(R.drawable.ic_play_circle)
         isPlaying = false
         musicService!!.mediaPlayer!!.pause()
+        binding.playPauseBt.setImageResource(R.drawable.ic_play_circle)
+        musicService!!.showNotification(MusicService.PLAY_IMAGE)
 
         /*if (audioVisual != null)
             audioVisual.release();*/
@@ -836,10 +1107,19 @@ class MPlayerActivity : BaseActivity<MplayerActivityBinding>(), ServiceConnectio
 
 
     override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
-        val binder = service as MusicService.MyBinder
-        musicService = binder.currentService()
+        if (musicService == null) {
+            val binder = service as MusicService.MyBinder
+            musicService = binder.currentService()
+            musicService!!.audioManager = getSystemService(AUDIO_SERVICE) as AudioManager
+            musicService!!.audioManager.requestAudioFocus(
+                musicService,
+                AudioManager.STREAM_MUSIC,
+                AudioManager.AUDIOFOCUS_GAIN
+            )
+
+            // musicService!!.showNotification(MusicService.PAUSE_IMAGE)
+        }
         createMediaPlayer()
-        musicService!!.showNotification(R.drawable.ic_pause_circle)
         musicService!!.seekBarSetup()
     }
 
@@ -848,15 +1128,58 @@ class MPlayerActivity : BaseActivity<MplayerActivityBinding>(), ServiceConnectio
     }
 
     override fun onCompletion(p0: MediaPlayer?) {
-        setMusicPosition(increment = true)
-        createMediaPlayer()
-        try {
+        if (endOfTrack) {
+            //exitApplication()
+            // pauseMusic()
+            // onBackPressedDispatcher.onBackPressed()
+        } else {
+            setMusicPosition(increment = true)
+            createMediaPlayer()
             setLayout()
-            if (audioVisual != null)
-                audioVisual.hide();
-        } catch (e: Exception) {
-            return
+            /*try {
+                if (audioVisual != null)
+                    audioVisual.hide()
+            } catch (e: Exception) {
+                return
+            }*/
         }
     }
 
+
+    @RequiresApi(Build.VERSION_CODES.Q)
+    private fun getMusicDetails(contentUri: Uri): MainMusicData {
+        var cursor: Cursor? = null
+        try {
+            val projection = arrayOf(MediaStore.Audio.Media.DATA, MediaStore.Audio.Media.DURATION)
+            cursor = this.contentResolver.query(contentUri, projection, null, null, null)
+            val dataColumn = cursor?.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA)
+            val durationColumn = cursor?.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION)
+            cursor!!.moveToFirst()
+            val path = dataColumn?.let { cursor.getString(it) }
+            val duration = durationColumn?.let { cursor.getLong(it) }!!
+            return MainMusicData(
+                id = "Unknown",
+                title = path.toString(),
+                album = "Unknown",
+                artist = "Unknown",
+                duration = duration,
+                artUri = "Unknown",
+                path = path.toString(),
+                artistId = "",
+                folderName = "",
+                size = "",
+                albumId = "",
+                isFavourite = false,
+                pixels = ""
+            )
+        } finally {
+            cursor?.close()
+        }
+
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (audioList[songPosition].id == "Unknown" && !isPlaying) exitApplication()
+    }
 }

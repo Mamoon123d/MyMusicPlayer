@@ -23,6 +23,8 @@ class MyPageAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle) :
         return titles[position]
     }
 
+
+
     fun addFragment(fragment: Fragment, title: String) {
         fragmentList.add(fragment)
         titles.add(title)

@@ -3,16 +3,236 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:background="@color/sheet_color"
         android:layout_width="match_parent"
+        android:paddingHorizontal="@dimen/qb_px_10"
         android:layout_height="match_parent">
-
-        <FrameLayout
-            android:id="@+id/eqFrame"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/tb"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_height="wrap_content">
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/back_bt"
+                android:layout_width="@dimen/qb_px_30"
+                android:layout_height="@dimen/qb_px_30"
+                android:padding="@dimen/qb_px_4"
+                app:layout_constraintBottom_toBottomOf="@+id/eq_title"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/eq_title"
+                app:srcCompat="@drawable/back_icon"
+                app:tint="@color/text_1" />
+
+            <TextView
+                android:id="@+id/eq_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="@dimen/qb_px_10"
+                android:text="@string/equalizer"
+                android:textColor="@color/text_1"
+                android:textSize="@dimen/sp16"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/eq_switch"
+                app:layout_constraintStart_toEndOf="@+id/back_bt"
+                app:layout_constraintTop_toTopOf="@+id/eq_switch" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/eq_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/qb_px_60"
+                android:drawableTint="@color/text_2"
+                android:text="On   "
+                android:textAllCaps="true"
+                android:textColor="@color/text_1"
+                android:textSize="@dimen/sp16"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:thumbTint="@color/text_2"
+                app:trackTint="#742AC877" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+        <HorizontalScrollView
+            android:id="@+id/chips_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tb"
+            >
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/eq_mode_cg"
+                android:layout_width="wrap_content"
+                app:singleSelection="true"
+                android:nestedScrollingEnabled="true"
+                app:flow_horizontalAlign="center"
+                app:singleLine="true"
+                android:layout_height="wrap_content"/>
+
+        </HorizontalScrollView>
+         <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/controller_con"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="5"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/chips_container">
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="@dimen/x0"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+
+                <com.musicplayer.android.utils.view.visualizer.VerticalSeekBar
+                    android:id="@+id/sb_60hz"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/qb_px_100"
+                    android:layout_gravity="center_horizontal"
+                    android:progress="50"
+                    android:progressBackgroundTint="@color/text_1"
+                    android:progressTint="@color/text_2"
+                    android:scrollbarAlwaysDrawVerticalTrack="true"
+                    android:thumbTint="@color/text_1"
+                    app:tickMarkTint="@color/text_1" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="@string/_60hz"
+                    android:textColor="@color/text_1"
+                    android:textSize="@dimen/sp12" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="@dimen/x0"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <com.musicplayer.android.utils.view.visualizer.VerticalSeekBar
+                    android:id="@+id/sb_230hz"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/qb_px_100"
+                    android:layout_gravity="center_horizontal"
+                    android:progress="50"
+                    android:progressBackgroundTint="@color/text_1"
+                    android:progressTint="@color/text_2"
+                    android:scrollbarAlwaysDrawVerticalTrack="true"
+                    android:thumbTint="@color/text_1"
+                    app:tickMarkTint="@color/text_1" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="@string/_230hz"
+                    android:textColor="@color/text_1"
+                    android:textSize="@dimen/sp12" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="@dimen/x0"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <com.musicplayer.android.utils.view.visualizer.VerticalSeekBar
+                    android:id="@+id/sb_910hz"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/qb_px_100"
+                    android:layout_gravity="center_horizontal"
+                    android:progress="50"
+                    android:progressBackgroundTint="@color/text_1"
+                    android:progressTint="@color/text_2"
+                    android:scrollbarAlwaysDrawVerticalTrack="true"
+                    android:thumbTint="@color/text_1"
+                    app:tickMarkTint="@color/text_1" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="@string/_910hz"
+                    android:textColor="@color/text_1"
+                    android:textSize="@dimen/sp12" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="@dimen/x0"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <com.musicplayer.android.utils.view.visualizer.VerticalSeekBar
+                    android:id="@+id/sb_3600hz"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/qb_px_100"
+                    android:layout_gravity="center_horizontal"
+                    android:progress="50"
+                    android:progressBackgroundTint="@color/text_1"
+                    android:progressTint="@color/text_2"
+                    android:scrollbarAlwaysDrawVerticalTrack="true"
+                    android:thumbTint="@color/text_1"
+                    app:tickMarkTint="@color/text_1" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="@string/_3600hz"
+                    android:textColor="@color/text_1"
+                    android:textSize="@dimen/sp12" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="@dimen/x0"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <com.musicplayer.android.utils.view.visualizer.VerticalSeekBar
+                    android:id="@+id/sb_14000hz"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/qb_px_100"
+                    android:layout_gravity="center_horizontal"
+                    android:progress="50"
+                    android:progressBackgroundTint="@color/text_1"
+                    android:progressTint="@color/text_2"
+                    android:scrollbarAlwaysDrawVerticalTrack="true"
+                    android:thumbTint="@color/text_1"
+                    app:tickMarkTint="@color/text_1" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="@string/_14000hz"
+                    android:textColor="@color/text_1"
+                    android:textSize="@dimen/sp12" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <!-- <FrameLayout
+             android:id="@+id/eqFrame"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             app:layout_constraintBottom_toBottomOf="parent"
+             app:layout_constraintLeft_toLeftOf="parent"
+             app:layout_constraintRight_toRightOf="parent"
+             app:layout_constraintTop_toTopOf="parent" />-->
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

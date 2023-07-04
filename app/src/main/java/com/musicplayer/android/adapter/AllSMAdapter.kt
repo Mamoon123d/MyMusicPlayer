@@ -12,8 +12,11 @@ class AllSMAdapter(
     context: Context,
     list: MutableList<MainMusicData>
 ) : BaseRvAdapter2<MainMusicData, AllSMAdapter.MyHolder>(context, list) {
+
+    var onMoreOptionClickListener: OnMoreOptionClickListener? = null
+
     override fun onBindData(holder: MyHolder, t: MainMusicData) {
-        holder.bind(context, t, itemPosition)
+        holder.bind(context, t, itemPosition, onMoreOptionClickListener)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyHolder {
@@ -28,17 +31,34 @@ class AllSMAdapter(
 
 
     class MyHolder(val binding: ItemAudioListBinding) : BaseRvViewHolder(binding) {
-        fun bind(context: Context, data: MainMusicData, itemPosition: Int) {
+        fun bind(
+            context: Context,
+            data: MainMusicData,
+            itemPosition: Int,
+            onMoreOptionClickListener: OnMoreOptionClickListener?
+        ) {
             binding.tvOrder.text = buildString {
                 append(itemPosition + 1)
             }
-            binding.tvSongName.text=data.title
-            binding.tvArtistAndAlbum.text= buildString {
+            binding.tvSongName.text = data.title
+            binding.tvArtistAndAlbum.text = buildString {
                 append(data.artist)
                 append("-")
                 append(data.album)
             }
+            binding.ivMore.setOnClickListener {
+                onMoreOptionClickListener!!.onMoreOptionClick(data, position)
+            }
+
         }
 
+    }
+
+    interface OnMoreOptionClickListener {
+        fun onMoreOptionClick(data: MainMusicData, position: Int)
+    }
+
+    fun setOnMoreOptionClickListenerX(onMoreOptionClickListener: OnMoreOptionClickListener) {
+        this.onMoreOptionClickListener = onMoreOptionClickListener
     }
 }

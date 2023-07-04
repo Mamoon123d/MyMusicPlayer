@@ -25,6 +25,7 @@
             android:id="@+id/cover_icon"
             android:layout_width="@dimen/qb_px_20"
             android:layout_height="@dimen/qb_px_20"
+
             app:layout_constraintBottom_toBottomOf="@+id/folder_iv"
             app:layout_constraintEnd_toEndOf="@+id/folder_iv"
             app:layout_constraintStart_toStartOf="@+id/folder_iv"
@@ -37,7 +38,7 @@
             android:layout_height="wrap_content"
             android:text="folder name"
             android:textColor="@color/text_3"
-            android:textSize="@dimen/sp16"
+            android:textSize="@dimen/sp14"
             android:maxLines="2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

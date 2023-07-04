@@ -34,7 +34,7 @@ interface MyDao {
     @Delete
     suspend fun deleteVideoPl(data: VideoItemPlData)
 
-    //---------------Favorite----------------------
+    //--------------- video Favorite----------------------
     @Query("select * from favorite ")
     fun getFavList(): LiveData<List<FavoriteData>>
 
@@ -49,6 +49,25 @@ interface MyDao {
 
     @Query("SELECT COUNT() FROM favorite")
     fun totalFavorites(): LiveData<Long>
+
+
+    //============ Video History ==============================
+    @Query("select * from video_history order by time desc")
+    fun getVideosInHistory(): LiveData<List<VideoHistoryData>>
+
+    @Insert()
+    suspend fun addVideoInHistory(data: VideoHistoryData)
+
+    @Delete
+    suspend fun removeVideoInHistory(data: VideoHistoryData)
+
+    @Update
+    suspend fun updateVideoInHistory(data: VideoHistoryData)
+
+
+    @Query("SELECT COUNT() FROM video_history WHERE videoId = :id")
+    fun isHistoryExists(id: String): LiveData<Int>
+
 
     //============ music favorite ==============================
     @Query("select * from music_favorite ")
@@ -92,4 +111,22 @@ interface MyDao {
 
     @Delete
     suspend fun removeMusicInPl(data: MusicItemPlData)
+
+    //==================== recent music =======================
+    @Query("select * from recent_music order by time desc")
+    fun recentMusics(): LiveData<List<RecentMusicItemData>>
+
+    @Insert()
+    suspend fun addRecentMusic(data: RecentMusicItemData)
+
+    @Delete
+    suspend fun removeRecentMusic(data: RecentMusicItemData)
+
+    @Update
+    suspend fun updateMRecentMusic(data: RecentMusicItemData)
+
+    @Query("SELECT COUNT() FROM recent_music WHERE music_id = :id")
+    fun isRecentMusicExists(id: String): LiveData<Int>
+
+
 }

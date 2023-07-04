@@ -23,6 +23,7 @@ import androidx.core.view.GestureDetectorCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.ExoPlayer
@@ -37,11 +38,19 @@ import com.musicplayer.android.R
 import com.musicplayer.android.base.BaseActivity
 import com.musicplayer.android.databinding.AskNextVideoBinding
 import com.musicplayer.android.databinding.PlayerActivityBinding
+import com.musicplayer.android.fragment.History
 import com.musicplayer.android.model.VideoMainData
+import com.musicplayer.android.room.data.VideoHistoryData
+import com.musicplayer.android.room.database.Db
+import com.musicplayer.android.room.factory.MainMvFactory
+import com.musicplayer.android.room.repo.Repository
+import com.musicplayer.android.room.vm.MainViewModel
 import com.musicplayer.android.utils.Extension.Companion.gone
 import com.musicplayer.android.utils.Extension.Companion.visible
 import com.musicplayer.android.utils.MyIntent
+import com.musicplayer.android.video.VideoDashFrag
 import com.musicplayer.android.video.VideoListActivity
+import com.musicplayer.android.video.folder.FolderActivity
 import java.io.File
 import java.util.*
 import kotlin.math.abs
@@ -52,6 +61,8 @@ class PlayerActivity : BaseActivity<PlayerActivityBinding>(isFullScreen = true),
     override fun setLayoutId(): Int {
         return R.layout.player_activity
     }
+
+    private lateinit var mainMv: MainViewModel
 
     //------------------------------------------------
     private lateinit var playPauseBtn: ImageButton
@@ -80,7 +91,19 @@ class PlayerActivity : BaseActivity<PlayerActivityBinding>(isFullScreen = true),
     }
 
     override fun initM() {
+        initDb()
         setMyPlayer()
+        //setAd()
+    }
+
+    private fun setAd() {
+
+    }
+
+    private fun initDb() {
+        val dao = Db.getDatabase(mActivity).myDao()
+        val repo = Repository(dao)
+        mainMv = ViewModelProvider(this, MainMvFactory(repo))[MainViewModel::class.java]
     }
 
     private fun createPlayer() {
@@ -88,7 +111,6 @@ class PlayerActivity : BaseActivity<PlayerActivityBinding>(isFullScreen = true),
             player.release()
         } catch (e: Exception) {
         }
-
         if (!isSpeedChecked) speed = 1.0f
         trackSelector = DefaultTrackSelector(this)
         videoTitle.text = playerList[position].title
@@ -109,7 +131,6 @@ class PlayerActivity : BaseActivity<PlayerActivityBinding>(isFullScreen = true),
                     //show dialog for asking to play next video
                     // or auto play after 500ms
                     askNextVideo()
-
                 }
             }
         })
@@ -118,6 +139,30 @@ class PlayerActivity : BaseActivity<PlayerActivityBinding>(isFullScreen = true),
         loudnessEnhancer.enabled = true
         nowPlayingId = playerList[position].id
         seekBarFeature()
+        mainMv.isHistoryExists(playerList[position].id.trim()).observe(this) {
+            val vData = playerList[position]
+            val data = VideoHistoryData(
+                id = vData.id.trim().toLong(),
+                videoId = vData.id.trim().toLong(),
+                path = vData.path,
+                duration = vData.duration,
+                recentTime = Date().time.toString(),
+                isFavorite = vData.isFavourite
+            )
+
+            if (it > 1) {
+                mainMv.removeVideoInHistory(data)
+            }
+            val isExist = it > 0
+
+            if (isExist) {
+                //exist
+                mainMv.updateVideoInHistory(data)
+            } else {
+                mainMv.addVideoInHistory(data)
+                // not exist
+            }
+        }
     }
 
     private fun askNextVideo() {
@@ -330,6 +375,25 @@ class PlayerActivity : BaseActivity<PlayerActivityBinding>(isFullScreen = true),
                 createPlayer()
 
             }
+            "VideoHistory" -> {
+                playerList = ArrayList()
+                playerList.addAll(VideoDashFrag.videoList)
+                createPlayer()
+
+            }
+            "FolderVideos" -> {
+                playerList = ArrayList()
+                playerList.addAll(FolderActivity.videoList)
+                createPlayer()
+
+            }
+            "History" -> {
+                playerList = ArrayList()
+                playerList.addAll(History.vList)
+                createPlayer()
+
+            }
+
             /*  "FolderActivity" -> {
                   playerList = ArrayList()
                   playerList.addAll(FoldersActivity.currentFolderVideos)
@@ -354,6 +418,7 @@ class PlayerActivity : BaseActivity<PlayerActivityBinding>(isFullScreen = true),
         // if(repeat) findViewById<ImageButton>(R.id.repeatBtn).setImageResource(R.drawable.exo_controls_repeat_all)
         // else findViewById<ImageButton>(R.id.repeatBtn).setImageResource(R.drawable.exo_controls_repeat_off)
     }
+
 
     private fun initializeBinding() {
         findViewById<ImageButton>(R.id.orientationBtn).setOnClickListener {
@@ -517,6 +582,12 @@ class PlayerActivity : BaseActivity<PlayerActivityBinding>(isFullScreen = true),
                 speed -= 0.10f
             }
         }
+
+        player.setPlaybackSpeed(speed)
+    }
+
+    private fun changeSpeedManual(speed_: Float) {
+        speed = speed_
         player.setPlaybackSpeed(speed)
     }
 
@@ -537,7 +608,6 @@ class PlayerActivity : BaseActivity<PlayerActivityBinding>(isFullScreen = true),
         val lp = this.window.attributes
         lp.screenBrightness = d * value
         this.window.attributes = lp
-
     }
 
     private fun seekBarFeature() {

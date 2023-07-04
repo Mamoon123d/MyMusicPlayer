@@ -12,6 +12,7 @@ import com.musicplayer.android.room.database.Db
 import com.musicplayer.android.room.repo.Repository
 import com.musicplayer.android.room.vm.MainViewModel
 import java.io.File
+import java.text.DateFormat
 import java.text.DecimalFormat
 
 
@@ -25,10 +26,16 @@ data class VideoMainData(
     var artUri: Uri,
     var pixels: String,
     var isFavourite: Boolean? = false,
-    var plVideoId:Long?=0
-)
+    var plVideoId: Long? = 0,
+    var type: Int? = 0
+) {
+    companion object {
+        const val MEDIA_TYPE: Int = 0
+        const val DATE_TYPE: Int = 1
+    }
+}
 
-data class Folder2(val id: String, val folderName: String, var numberVideos: Int = 0)
+data class Folder2(val id: String, var folderName: String, var numberVideos: Int = 0,val path:String?="")
 
 @SuppressLint("InlinedApi", "Recycle", "Range")
 fun getAllVideos(context: Context): ArrayList<VideoMainData> {
@@ -110,20 +117,31 @@ fun getAllVideos(context: Context): ArrayList<VideoMainData> {
                         pixels = pixelsC,
                         isFavourite = false
                     )
+
                     if (file.exists()) tempList.add(video)
 
                     //for adding folders
+                    var isDir = false
                     if (!tempFolderList.contains(folderC) && !folderC.contains("Internal Storage")) {
                         tempFolderList.add(folderC)
+                        //val pathBlocks = pathC.split("/")
+                       // val dir = pathBlocks[4]
+
                         MainActivity.folderList.add(
                             Folder2(
                                 id = folderIdC,
-                                folderName = folderC
+                                folderName = folderC,
+                                path = pathC
                             )
                         )
+                       /* Log.d("folderTag", "folderName: $folderC path: " + pathC + " dir :" + dir)
+                        if (dir.matches(Regex("/$dir/"))) {
+                            if (!isDir) {
 
+                                isDir = true
+                            }
+                        }*/
                     }
-
 
                 } catch (e: Exception) {
                     e.printStackTrace()
@@ -271,41 +289,15 @@ fun formatFileSize(size: Long): String? {
     return hrSize
 }
 
-/*fun getPixels(path: String): Int {
-    var retriever: MediaMetadataRetriever? = null
-    val bmp: Bitmap? = null
-    val inputStream: FileInputStream? = null
-    val mWidthHeight = 0
-    try {
-        retriever = MediaMetadataRetriever()
-        retriever.setDataSource(path)
-        val width =
-            retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH)
-                ?.let { Integer.valueOf(it) }
-        val height =
-            retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT)
-                ?.let { Integer.valueOf(it) }
-
-        retriever.release()
-    } catch (e: FileNotFoundException) {
-        e.printStackTrace()
-    } catch (e: IOException) {
-        e.printStackTrace()
-    } catch (e: java.lang.RuntimeException) {
-        e.printStackTrace()
-    } finally {
-        if (retriever != null) {
-            retriever.release()
-        }
-    }
-    return mWidthHeight
-
-}*/
+public fun formatVideoDate(time: Long): String {
+    return DateFormat.getDateInstance(
+        DateFormat.SHORT
+    ).format(time)
+}
 
 @SuppressLint("Range", "Recycle")
-fun getAllVideo(context: Context, folderId: String): ArrayList<VideoMainData> {
-    val tempList = ArrayList<VideoMainData>()
-    val selection = MediaStore.Video.Media.BUCKET_ID
+private fun getAllVideosFromFolder(context: Context): ArrayList<VideoFolderData> {
+    val tempFolderList = ArrayList<VideoFolderData>()
     val projection = arrayOf(
         MediaStore.Video.Media.TITLE,
         MediaStore.Video.Media.SIZE,
@@ -314,14 +306,14 @@ fun getAllVideo(context: Context, folderId: String): ArrayList<VideoMainData> {
         MediaStore.Video.Media.DATA,
         MediaStore.Video.Media.DATE_ADDED,
         MediaStore.Video.Media.DURATION,
-        selection
+        MediaStore.Video.Media.BUCKET_ID
     )
 
     val cursor = context.contentResolver.query(
         MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
         projection,
-        selection,
-        arrayOf(folderId),
+        null,
+        null,
         null
     )
     //sort Order=MediaStore.Video.Media.DATE_TAKEN + "DESC"
@@ -335,32 +327,26 @@ fun getAllVideo(context: Context, folderId: String): ArrayList<VideoMainData> {
                 val idC = cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media._ID))
                 val folderC =
                     cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.BUCKET_DISPLAY_NAME))
+                val folderIdC =
+                    cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.BUCKET_ID))
                 val sizeC = cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.SIZE))
                 val pathC = cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.DATA))
 //                  val durationC = cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.DURATION)).toLong()
                 try {
-                    //val pathC ="/storage/emulator/0/Download"
-                    val file = File(pathC)
-                    val artUriC = Uri.fromFile(file)
-                    val video = VideoMainData(
-                        // date = dateC,
-                        title = titleC,
-                        id = idC,
-                        folderName = folderC,
-                        duration = 0,
-                        size = sizeC,
-                        path = pathC,
-                        artUri = artUriC,
-                        pixels = ""
-                    )
-                    if (file.exists()) tempList.add(video)
+                    if (tempFolderList.add(VideoFolderData(id = folderIdC, folderName = folderC))) {
+
+                    }
+                    // if (folderList!!.add(VideoFolderData(id = folderIdC, folderName = folderC))
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
             } while (cursor.moveToNext())
     cursor!!.close()
-    return tempList
+    return tempFolderList
 }
+
+
+
 
 
 

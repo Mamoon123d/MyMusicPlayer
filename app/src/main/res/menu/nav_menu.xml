@@ -4,7 +4,7 @@
    <item
        android:id="@+id/video"
        android:icon="@drawable/play"
-       android:title="@string/video"  />
+       android:title="@string/video" />
     <item
         android:id="@+id/music"
         android:icon="@drawable/music"
@@ -12,7 +12,11 @@
     <item
         android:id="@+id/discover"
         android:icon="@drawable/discovery"
-        android:title="@string/discover" />
+        android:title="@string/game" />
+    <item
+        android:id="@+id/offer"
+        android:icon="@drawable/ic_offer"
+        android:title="Earn" />
     <item
         android:id="@+id/me"
         android:icon="@drawable/user"

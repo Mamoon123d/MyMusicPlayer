@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:maxads="http://schemas.applovin.com/android/1.0">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/tb"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/qb_px_55"
+            android:background="@color/first_color"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/back_img"
+                android:layout_width="@dimen/qb_px_40"
+                android:layout_height="match_parent"
+                android:padding="@dimen/x6"
+                android:tint="@color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/back_icon" />
+
+            <TextView
+                android:id="@+id/title_tv"
+                android:layout_width="@dimen/x0"
+                android:layout_height="wrap_content"
+                android:lines="1"
+                android:paddingHorizontal="@dimen/x4"
+                android:text="Invite Friends"
+                android:textColor="@color/text_1"
+                android:textSize="@dimen/sp18"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/back_img"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/x0"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tb">
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/header_con"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/qb_px_200"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/header_img"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/x0"
+                        android:elevation="@dimen/x1"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/invite_img" />
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:elevation="@dimen/x2"
+                    android:padding="@dimen/x10"
+                    android:text="Invite friends and earn more coins"
+                    android:textAlignment="center"
+                    android:textColor="@color/text_3"
+                    android:textSize="@dimen/sp20"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:weightSum="2">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="@dimen/x0"
+                        android:layout_height="match_parent"
+                        android:layout_margin="@dimen/qb_px_8"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_invite_friend"
+                        android:paddingVertical="@dimen/qb_px_4">
+
+                        <TextView
+                            android:id="@+id/if_title"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/invite_friends"
+                            android:textAlignment="center"
+                            android:textSize="@dimen/sp16"
+                            android:textStyle="bold"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <androidx.appcompat.widget.LinearLayoutCompat
+                            android:id="@+id/tf_con"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/x4"
+                            android:orientation="horizontal"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/if_title">
+
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:layout_width="@dimen/qb_px_15"
+                                android:layout_height="@dimen/qb_px_15"
+                                android:layout_gravity="center_vertical"
+                                android:tint="@color/text_5"
+                                app:srcCompat="@drawable/ic_user" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:paddingHorizontal="@dimen/qb_px_4"
+                                android:text="1" />
+                        </androidx.appcompat.widget.LinearLayoutCompat>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/total_coin_con"
+                        android:layout_width="@dimen/x0"
+                        android:layout_height="match_parent"
+                        android:layout_margin="@dimen/qb_px_8"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_invite_friend"
+                        android:paddingVertical="@dimen/qb_px_4">
+
+                        <TextView
+                            android:id="@+id/t_coins"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/total_coins"
+                            android:textAlignment="center"
+                            android:textSize="@dimen/sp16"
+                            android:textStyle="bold"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <androidx.appcompat.widget.LinearLayoutCompat
+                            android:id="@+id/tc_con"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/x4"
+                            android:orientation="horizontal"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/t_coins">
+
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:layout_width="@dimen/qb_px_15"
+                                android:layout_height="@dimen/qb_px_15"
+                                android:layout_gravity="center_vertical"
+                                android:tint="@color/text_5"
+                                app:srcCompat="@drawable/ic_coin_dark" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:paddingHorizontal="@dimen/qb_px_2"
+                                android:text="1" />
+                        </androidx.appcompat.widget.LinearLayoutCompat>
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:layout_width="@dimen/x20"
+                            android:layout_height="@dimen/x20"
+                            android:layout_marginEnd="@dimen/x10"
+                            android:padding="@dimen/x4"
+                            android:tint="@color/text_5"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:srcCompat="@drawable/ic_fast_forward" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <TextView
+                    android:id="@+id/steps"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="20dp"
+                    android:fallbackLineSpacing="true"
+                    android:lineSpacingExtra="0.60dp"
+                    android:padding="@dimen/x10"
+                    android:text="steps"
+                    android:textColor="@color/text_3"
+                    android:textSize="@dimen/sp16"
+                    android:textStyle="normal" />
+
+                <com.applovin.mediation.ads.MaxAdView
+                    android:id="@+id/al_banner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="55dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    maxads:adUnitId="9576951bea68e23d" />
+
+                <TextView
+                    android:id="@+id/share_bt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/qb_px_30"
+                    android:layout_marginTop="@dimen/x20"
+                    android:background="@drawable/bg_solid_btn"
+                    android:padding="@dimen/x10"
+                    android:text="Share to Friends"
+                    android:textAlignment="center"
+                    android:textAllCaps="true"
+                    android:textColor="@color/text_1"
+                    android:textStyle="bold" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
+        </androidx.core.widget.NestedScrollView>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

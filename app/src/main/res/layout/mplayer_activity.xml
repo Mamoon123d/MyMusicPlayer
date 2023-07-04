@@ -2,12 +2,14 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".music.MPlayerActivity"
+    xmlns:maxads="http://schemas.applovin.com/android/1.0"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/mainLay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
         android:background="#492D36">
 
         <androidx.appcompat.widget.AppCompatImageView
@@ -91,6 +93,54 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/ad_con"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:elevation="@dimen/x10"
+
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/album_art_con">
+
+                <com.applovin.mediation.ads.MaxAdView
+                    android:id="@+id/mr_ad"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
+                    android:layout_marginVertical="@dimen/x10"
+                    android:background="@color/text_1"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    maxads:adFormat="MREC"
+                    maxads:adUnitId="8ed3c53aaa5559c3" />
+
+                <TextView
+                    android:id="@+id/ad_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/qb_px_6"
+                    android:background="@drawable/bg_ad_text"
+                    android:paddingHorizontal="@dimen/qb_px_2"
+                    android:text="AD"
+                    android:textColor="@color/text_5"
+                    android:textSize="@dimen/sp10"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toStartOf="@+id/ad_time"
+                    app:layout_constraintTop_toBottomOf="@+id/mr_ad" />
+
+                <TextView
+                    android:id="@+id/ad_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="@dimen/qb_px_2"
+                    android:text="0:05"
+                    android:textColor="@color/text_1"
+                    android:textSize="@dimen/sp10"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/ad_text" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/album_art_con"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -112,7 +162,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/disk" />
 
-                <com.musicplayer.android.utils.view.visualizer.CircleVisualizer
+                <!--<com.musicplayer.android.utils.view.visualizer.CircleVisualizer
                     android:id="@+id/visualizer"
                     android:layout_width="@dimen/qb_px_200"
                     android:layout_height="@dimen/qb_px_200"
@@ -125,7 +175,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent" />-->
 
                 <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/album_cover"
@@ -136,11 +186,13 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
+                    app:shapeAppearance="@style/circleImageView"
                     app:shapeAppearanceOverlay="@style/circleImageView" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -152,9 +204,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/x10"
-                    android:weightSum="5"
                     android:paddingVertical="@dimen/qb_px_20"
                     android:visibility="visible"
+                    android:weightSum="5"
                     app:layout_constraintBottom_toTopOf="@+id/progress_con"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent">
@@ -180,12 +232,32 @@
                         android:layout_weight="1"
                         app:srcCompat="@drawable/ic_echo" />
 
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/listenTimeBt"
-                        android:layout_width="@dimen/qb_px_25"
-                        android:layout_height="@dimen/qb_px_25"
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        app:srcCompat="@drawable/ic_clock" />
+                        android:orientation="vertical">
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/listenTimeBt"
+                            android:layout_width="@dimen/qb_px_25"
+                            android:layout_height="@dimen/qb_px_25"
+                            android:layout_gravity="center_horizontal"
+                            app:srcCompat="@drawable/ic_clock" />
+
+                        <TextView
+                            android:id="@+id/tv_time"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:paddingTop="@dimen/x2"
+                            android:text="10:18:12"
+                            android:textColor="@color/text_1"
+                            android:textSize="@dimen/sp10"
+                            android:visibility="gone" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/moreOptionBt"

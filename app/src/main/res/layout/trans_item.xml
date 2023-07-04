@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/x10"
+        android:background="@drawable/bg_offer_item"
+        android:layout_marginTop="@dimen/x10"
+        android:padding="@dimen/qb_px_10">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/ivOffer"
+            android:layout_width="@dimen/qb_px_60"
+            android:layout_height="@dimen/qb_px_60"
+            android:scaleType="centerCrop"
+            app:srcCompat="@drawable/ic_trans"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            />
+
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="@dimen/x0"
+            android:layout_height="wrap_content"
+            android:text="@string/title"
+            android:textColor="@color/text_3"
+            android:paddingHorizontal="@dimen/x6"
+            android:lines="1"
+            android:ellipsize="end"
+            android:textStyle="bold"
+            android:textSize="@dimen/sp16"
+            app:layout_constraintEnd_toStartOf="@+id/amountCon"
+            app:layout_constraintStart_toEndOf="@+id/ivOffer"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvSubtitle"
+            android:layout_width="@dimen/x0"
+            android:layout_height="wrap_content"
+            android:text="@string/title"
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:textSize="@dimen/sp14"
+            android:paddingHorizontal="@dimen/x6"
+            app:layout_constraintEnd_toStartOf="@+id/amountCon"
+            app:layout_constraintStart_toEndOf="@+id/ivOffer"
+            app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/amountCon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_coins"
+            android:paddingVertical="@dimen/qb_px_4"
+            android:paddingHorizontal="@dimen/x8"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/tvCoin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="+100"
+                android:textSize="@dimen/sp16"
+                android:textStyle="bold"
+                android:textColor="@color/text_2"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/ivCoin"
+                android:layout_width="@dimen/qb_px_20"
+                android:layout_height="@dimen/qb_px_20"
+                app:layout_constraintBottom_toBottomOf="@+id/tvCoin"
+                app:layout_constraintEnd_toStartOf="@+id/tvCoin"
+                app:layout_constraintTop_toTopOf="@+id/tvCoin"
+                app:srcCompat="@drawable/coin" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

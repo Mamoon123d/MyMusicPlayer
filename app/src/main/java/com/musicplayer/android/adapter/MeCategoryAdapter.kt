@@ -2,31 +2,34 @@ package com.musicplayer.android.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.recyclerview.widget.RecyclerView
-import com.musicplayer.android.R
+import com.musicplayer.android.base.BaseRvAdapter2
+import com.musicplayer.android.base.BaseRvViewHolder
+import com.musicplayer.android.databinding.ItemCategoryBinding
 import com.musicplayer.android.model.MeCategoryData
 
-class MeCategoryAdapter(private val list: ArrayList<MeCategoryData>, private val context: Context) : RecyclerView.Adapter<MeCategoryAdapter.MeViewHolder>() {
+class MeCategoryAdapter(context: Context, list: ArrayList<MeCategoryData>) : BaseRvAdapter2<MeCategoryData,MeCategoryAdapter.MyHolder>(context, list) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MeViewHolder {
-        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_category, parent, false)
-        return MeViewHolder(itemView)
-    }
 
-    override fun onBindViewHolder(holder: MeViewHolder, position: Int) {
-        holder.nameTV.text = list[position].Name
-        holder.categoryIV.setImageResource(list[position].Img)
-    }
-    override fun getItemCount(): Int {
-        return list.size
+    class MyHolder(val binding: ItemCategoryBinding) : BaseRvViewHolder(binding) {
+        fun bind(context: Context, t: MeCategoryData) {
+            binding.idTVCategory.text=t.Name
+            binding.idIVCategory.setImageResource(t.Img)
+        }
+
     }
 
-    class MeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val nameTV: TextView = itemView.findViewById(R.id.idTVCategory)
-        val categoryIV: ImageView = itemView.findViewById(R.id.idIVCategory)
+
+
+    override fun onBindData(holder: MyHolder, t: MeCategoryData) {
+        holder.bind(context,t)
     }
+
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyHolder {
+        return MyHolder(ItemCategoryBinding.inflate(LayoutInflater.from(parent.context),parent,false))
+    }
+
+
+
 }

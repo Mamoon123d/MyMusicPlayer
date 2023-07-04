@@ -1,33 +1,49 @@
 package com.musicplayer.android.adapter
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import androidx.recyclerview.widget.RecyclerView
-import com.musicplayer.android.R
-import com.musicplayer.android.model.VideoData
+import com.bumptech.glide.Glide
+import com.musicplayer.android.base.BaseRvAdapter
+import com.musicplayer.android.base.BaseRvViewHolder
+import com.musicplayer.android.databinding.ItemVideoHistoryBinding
+import com.musicplayer.android.model.formatDuration
+import com.musicplayer.android.room.data.VideoHistoryData
 
-class VideoHistoryAdapter(private val context: Context, private val mList: List<VideoData>):RecyclerView.Adapter<VideoHistoryAdapter.vh>() {
+class VideoHistoryAdapter(context: Context, list: List<VideoHistoryData>) :
+    BaseRvAdapter<VideoHistoryData, VideoHistoryAdapter.MyHolder>(
+        context, list
+    ) {
 
 
-    @SuppressLint("SuspiciousIndentation")
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): vh {
-    val view=LayoutInflater.from(parent.context).inflate(R.layout.item_video_history,parent,false)
-        return vh(view)
+    /* @SuppressLint("SuspiciousIndentation")
+     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): vh {
+     val view=LayoutInflater.from(parent.context).inflate(R.layout.item_video_history,parent,false)
+         return vh(view)
+     }*/
+
+
+    override fun onBindData(holder: MyHolder, t: VideoHistoryData) {
+        holder.bind(context, t)
     }
 
-    override fun onBindViewHolder(holder: vh, position: Int) {
-    val list = mList[position]
-       // Glide.with(context).load(list.img).into(holder.videoItem)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyHolder {
+        return MyHolder(
+            ItemVideoHistoryBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
+        )
     }
 
-    override fun getItemCount(): Int {
-        return mList.size
-    }
-    class vh(ItemView:View) : RecyclerView.ViewHolder(ItemView) {
-    val videoItem:ImageView=itemView.findViewById(R.id.ivYouTube_history)
+    class MyHolder(val binding: ItemVideoHistoryBinding) : BaseRvViewHolder(binding) {
+        fun bind(context: Context, t: VideoHistoryData) {
+            binding.imgVideoHistory.apply {
+                Glide.with(context).load(t.path).into(this)
+            }
+            binding.videoHistoryDuration.text= formatDuration(t.duration)
+        }
+
     }
 }

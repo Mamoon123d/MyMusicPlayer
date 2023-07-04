@@ -91,7 +91,17 @@ dependencies {
     //color palette
     implementation 'androidx.palette:palette-ktx:1.0.0'
 
+    //api network
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.9.1'
+
 
     //echolizer
-    //implementation 'com.github.bullheadandplato:AndroidEqualizer:1.0'
+    implementation 'com.github.bullheadandplato:AndroidEqualizer:2.2'
+
+    //applovin
+    implementation 'com.applovin:applovin-sdk:11.9.0'
+    implementation("androidx.lifecycle:lifecycle-process:2.6.1")
+
 }
